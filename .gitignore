@@ -30,3 +30,17 @@
 *.exe
 *.out
 *.app
+
+# Installed Headers
+LabVIEW/include/**
+
+
+# Build Directory
+build/**
+
+#.vscode settings
+.vscode/**
+
+# LabVIEW Project Files
+*.aliases
+*.lvlps
