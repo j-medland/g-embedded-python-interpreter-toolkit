@@ -12,7 +12,7 @@ Then, what if we could also bring C++ to the party? Why, that would be the ultim
 The ease of programming C++, the peformance of Python and the massive potential user base of literally tens of LabVIEW developers.
 
 ## _Aren't you forgetting that [the Python Integration Node](https://www.ni.com/docs/en-US/bundle/labview/page/glang/python_node.html) already exisits?_
-I suppose next you will be saying that integrating Python into LabVIEW has been possible since 2016? Bah.
+I suppose next you will be saying that integrating Python into LabVIEW has definately been a thing since 2016 and probably before.
 
 ## _So Really, WHY?_
 _... and why have you written this first README in the style of an imagined conversation?_
