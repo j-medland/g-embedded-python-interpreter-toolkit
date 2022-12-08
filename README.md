@@ -39,7 +39,7 @@ Working directly with the Python's C interpreter inteface is tricky so we are go
 ## Building Binaries
 * [clone this repo with submodules](https://stackoverflow.com/a/4438292/5609762)
 * Use cmake to configure and build. The `.vscode-example` directory contains the settings for vscode C++ and CMake extensions
-* **Do Not Use a Normal Debug Build** - the Python DLL loads lots of dependencies so unless you compiled a special debug build of Python, a mix of debug and non-debug libs will be loaded and cause issues. You can debug your C++ code using a Release-With-Debug-Info build and the provided vscode launch.json
+* **Do Not Use a Normal Debug Build** - the Python DLL loads lots of dependencies so unless you compiled a special debug build of Python, a mix of debug and non-debug libs will be loaded and cause issues. You can debug your C++ code using a _Release-With-Debug-Info_ build and the provided vscode `launch.json`
 
 ## Contributions
 Very welcome. Open an issue to discuss anything or to put me right on how the Python Integration node works.
