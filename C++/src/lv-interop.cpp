@@ -20,7 +20,7 @@ MgErr LVNumericArrayResize(int32_t typeCode, int32_t numDims, void *handle, size
     return numericArrayResizeImp(typeCode, numDims, handle, size);
 }
 
-MgErr writeStringToStringHandlePtr(LVStrHandle *handlePtr, std::string s)
+MgErr writeStringToStringHandlePtr(LVStrHandlePtr handlePtr, std::string s)
 {
     size_t currentSize = (*handlePtr) && (**handlePtr) ? (**handlePtr)->cnt : 0;
     if (s.length() > currentSize)

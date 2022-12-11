@@ -31,4 +31,6 @@ extern "C"{
     GEPIT_EXPORT int32_t create_session(LVErrorClusterPtr errorPtr, SessionHandlePtr sessionPtr);
     GEPIT_EXPORT int32_t destroy_session(LVErrorClusterPtr errorPtr, SessionHandle session);
     GEPIT_EXPORT int32_t evaluate_script(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandle filePathStrHandle);
+    GEPIT_EXPORT int32_t read_session_attribute_as_string(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandle attributeNameStrHandle, LVBoolean* found, LVStrHandlePtr valueStrHandlePtr);
+
 }

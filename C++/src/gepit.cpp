@@ -117,6 +117,37 @@ int32_t evaluate_script(LVErrorClusterPtr errorPtr, SessionHandle session, LVStr
     return 0;
 }
 
+int32_t read_session_attribute_as_string(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandle attributeNameStrHandle, LVBoolean* found, LVStrHandlePtr valueStrHandlePtr)
+{
+    if (!session)
+    {
+        return writeInvalidSessoionHandleErr(errorPtr, __func__);
+    }
+    try
+    {
+        std::string attrName = lvStrHandleToStdString(attributeNameStrHandle);
+        if(session->scope.contains(attrName)){
+            *found = LVBooleanTrue;
+            auto value = session->scope[attrName.c_str()];
+            return writeStringToStringHandlePtr(valueStrHandlePtr, pybind11::str(value));
+        }
+        *found = LVBooleanFalse;
+    }
+    catch (pybind11::error_already_set const &e)
+    {
+        return writePythonExceptionErr(errorPtr, __func__, e.what());
+    }
+    catch (std::exception const &e)
+    {
+        return writeStdExceptionErr(errorPtr, __func__, e.what());
+    }
+    catch (...)
+    {
+        return writeUnkownErr(errorPtr, __func__);
+    }
+    return 0;
+}
+
 // error output implementations
 inline MgErr writeInvalidSessoionHandleErr(LVErrorClusterPtr errorPtr, std::string functionName)
 {

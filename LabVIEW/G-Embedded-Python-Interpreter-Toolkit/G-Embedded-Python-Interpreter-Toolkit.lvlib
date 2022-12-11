@@ -16,4 +16,6 @@
 	<Item Name="Finalize Interpreter.vi" Type="VI" URL="../Finalize Interpreter.vi"/>
 	<Item Name="Create Session.vi" Type="VI" URL="../Create Session.vi"/>
 	<Item Name="Destroy Session.vi" Type="VI" URL="../Destroy Session.vi"/>
+	<Item Name="Evaluate Script.vi" Type="VI" URL="../Evaluate Script.vi"/>
+	<Item Name="Read Session Attribute as String.vi" Type="VI" URL="../Read Session Attribute as String.vi"/>
 </Library>

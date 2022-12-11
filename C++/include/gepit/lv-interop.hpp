@@ -37,7 +37,7 @@ typedef uint8_t LVBoolean;
 typedef struct {
     int32_t cnt;
     uint8_t str[1];
-} LVStr, *LVStrPtr, **LVStrHandle;
+} LVStr, *LVStrPtr, **LVStrHandle, ***LVStrHandlePtr;
     
 // LabVIEW Array Template
 template <unsigned ndims, typename datatype>
@@ -82,7 +82,7 @@ using numericArrayResizePtr = std::add_pointer<MgErr(int32_t, int32_t, void *han
 static numericArrayResizePtr numericArrayResizeImp = nullptr;
 
 // write a std::string to a LabVIEW String-Handle Pointer
-MgErr writeStringToStringHandlePtr(LVStrHandle*,std::string);
+MgErr writeStringToStringHandlePtr(LVStrHandlePtr,std::string);
 
 // write to an LabVIEW Error
 MgErr writeErrorToErrorClusterPtr(LVErrorClusterPtr, int, std::string, std::string);
