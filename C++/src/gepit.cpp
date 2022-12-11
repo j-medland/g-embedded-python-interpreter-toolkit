@@ -2,10 +2,9 @@
 
 inline MgErr writePythonExceptionErr(LVErrorClusterPtr, std::string, std::string);
 inline MgErr writeStdExceptionErr(LVErrorClusterPtr, std::string, std::string);
-inline MgErr writeInvalidSessoionHandleErr(LVErrorClusterPtr, std::string);
+inline MgErr writeInvalidSessionHandleErr(LVErrorClusterPtr, std::string);
 inline MgErr writeUnkownErr(LVErrorClusterPtr, std::string);
 
-// DLL Functions
 int32_t initialize_interpreter(LVErrorClusterPtr errorPtr, LVBoolean *alreadyRunningPtr)
 {
     try
@@ -71,7 +70,7 @@ int32_t destroy_session(LVErrorClusterPtr errorPtr, SessionHandle session)
 {
     if (!session)
     {
-        return writeInvalidSessoionHandleErr(errorPtr, __func__);
+        return writeInvalidSessionHandleErr(errorPtr, __func__);
     }
     try
     {
@@ -96,7 +95,7 @@ int32_t evaluate_script(LVErrorClusterPtr errorPtr, SessionHandle session, LVStr
 {
     if (!session)
     {
-        return writeInvalidSessoionHandleErr(errorPtr, __func__);
+        return writeInvalidSessionHandleErr(errorPtr, __func__);
     }
     try
     {
@@ -121,7 +120,7 @@ int32_t read_session_attribute_as_string(LVErrorClusterPtr errorPtr, SessionHand
 {
     if (!session)
     {
-        return writeInvalidSessoionHandleErr(errorPtr, __func__);
+        return writeInvalidSessionHandleErr(errorPtr, __func__);
     }
     try
     {
@@ -149,7 +148,7 @@ int32_t read_session_attribute_as_string(LVErrorClusterPtr errorPtr, SessionHand
 }
 
 // error output implementations
-inline MgErr writeInvalidSessoionHandleErr(LVErrorClusterPtr errorPtr, std::string functionName)
+inline MgErr writeInvalidSessionHandleErr(LVErrorClusterPtr errorPtr, std::string functionName)
 {
     return writeErrorToErrorClusterPtr(errorPtr, errorCodes::StdExceptionErr, functionName, "The session-handle supplied is invalid.");
 }
