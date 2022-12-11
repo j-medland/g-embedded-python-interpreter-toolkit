@@ -47,7 +47,7 @@ Very welcome. Open an issue to discuss anything or to put me right on how the Py
 ## To Do
 - [x] Setup Build System and Dependency Management
 - [ ] Simple Working Example - Evaluate Python Script and Call Functions (In Progress)
+- [ ] Explore Passing Python Objects back to LabVIEW (In Progress)
 - [ ] Explore Passing LabVIEW managed buffers and IMAQ images to Python
-- [ ] Explore Passing Python Objects back to LabVIEW
 - [ ] Explore Passing Python allocated buffers back to LabVIEW
 - [ ] Explore Multi-Threaded Operation (LabVIEW side only - Only a single Python Interpreter instance will be running due to limitations of pybind11 and acceptable levels of sanity and public order)
