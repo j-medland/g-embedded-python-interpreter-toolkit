@@ -86,3 +86,6 @@ MgErr writeStringToStringHandlePtr(LVStrHandle*,std::string);
 
 // write to an LabVIEW Error
 MgErr writeErrorToErrorClusterPtr(LVErrorClusterPtr, int, std::string, std::string);
+
+// copy a LVStrHandle to a std::string
+std::string lvStrHandleToStdString(LVStrHandle handle);

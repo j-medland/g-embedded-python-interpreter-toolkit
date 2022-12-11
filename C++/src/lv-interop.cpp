@@ -50,3 +50,9 @@ MgErr writeErrorToErrorClusterPtr(LVErrorClusterPtr errorPtr, int32_t code, std:
     // write outputString to error source string handle
     return writeStringToStringHandlePtr(&(errorPtr->source), outputString);
 }
+
+
+std::string lvStrHandleToStdString(LVStrHandle handle){
+    size_t length = handle && (*handle) ? (*handle)->cnt : 0;
+    return std::string(reinterpret_cast<char*>((*handle)->str), length);
+}

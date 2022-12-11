@@ -28,4 +28,7 @@ typedef Session *SessionHandle, **SessionHandlePtr;
 extern "C"{
     GEPIT_EXPORT int32_t initialize_interpreter(LVErrorClusterPtr errorPtr, LVBoolean *alreadyRunningPtr);
     GEPIT_EXPORT int32_t finalize_interpreter(LVErrorClusterPtr errorPtr);
+    GEPIT_EXPORT int32_t create_session(LVErrorClusterPtr errorPtr, SessionHandlePtr sessionPtr);
+    GEPIT_EXPORT int32_t destroy_session(LVErrorClusterPtr errorPtr, SessionHandle session);
+    GEPIT_EXPORT int32_t evaluate_script(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandle filePathStrHandle);
 }

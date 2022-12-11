@@ -13,9 +13,11 @@
 		<Property Name="specify.custom.address" Type="Bool">false</Property>
 		<Item Name="test" Type="Folder" URL="../test">
 			<Property Name="NI.DISK" Type="Bool">true</Property>
+			<Property Name="NI.SortType" Type="Int">3</Property>
 		</Item>
 		<Item Name="G-Embedded-Python-Interpreter-Toolkit.lvlib" Type="Library" URL="../G-Embedded-Python-Interpreter-Toolkit/G-Embedded-Python-Interpreter-Toolkit.lvlib"/>
 		<Item Name="gepit.cp310.32.dll" Type="Document" URL="../bin/gepit.cp310.32.dll"/>
+		<Item Name="Test.vi" Type="VI" URL="../Test.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="vi.lib" Type="Folder">
 				<Item Name="8.6CompatibleGlobalVar.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/config.llb/8.6CompatibleGlobalVar.vi"/>
