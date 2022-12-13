@@ -20,6 +20,7 @@
 #define LV_DOUBLE_TYPECODE 10
 
 typedef int32_t MgErr;
+typedef uint32_t LVRefNum;
 
 // define types with byte-packing specified
 // cmake sizeof void used to determine bitness

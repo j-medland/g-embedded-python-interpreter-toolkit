@@ -12,10 +12,18 @@
 		<Property Name="NI.LibItem.Scope" Type="Int">2</Property>
 		<Item Name="Merge Call Library Errors.vi" Type="VI" URL="../Merge Call Library Errors.vi"/>
 	</Item>
+	<Item Name="Types" Type="Folder">
+		<Item Name="Python Object Type.ctl" Type="VI" URL="../Python Object Type.ctl"/>
+		<Item Name="Python Object Reference.ctl" Type="VI" URL="../Python Object Reference.ctl"/>
+	</Item>
 	<Item Name="Initialize Interpreter.vi" Type="VI" URL="../Initialize Interpreter.vi"/>
 	<Item Name="Finalize Interpreter.vi" Type="VI" URL="../Finalize Interpreter.vi"/>
 	<Item Name="Create Session.vi" Type="VI" URL="../Create Session.vi"/>
 	<Item Name="Destroy Session.vi" Type="VI" URL="../Destroy Session.vi"/>
 	<Item Name="Evaluate Script.vi" Type="VI" URL="../Evaluate Script.vi"/>
 	<Item Name="Read Session Attribute as String.vi" Type="VI" URL="../Read Session Attribute as String.vi"/>
+	<Item Name="Create Py Object Int32.vi" Type="VI" URL="../Create Py Object Int32.vi"/>
+	<Item Name="Destroy Py Object.vi" Type="VI" URL="../Destroy Py Object.vi"/>
+	<Item Name="Cast Py Object to I32.vi" Type="VI" URL="../Cast Py Object to I32.vi"/>
+	<Item Name="Call Function (Return Python Object).vi" Type="VI" URL="../Call Function (Return Python Object).vi"/>
 </Library>
