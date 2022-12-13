@@ -11,10 +11,12 @@
 	<Item Name="Private" Type="Folder">
 		<Property Name="NI.LibItem.Scope" Type="Int">2</Property>
 		<Item Name="Merge Call Library Errors.vi" Type="VI" URL="../Merge Call Library Errors.vi"/>
+		<Item Name="Call.vi" Type="VI" URL="../Call.vi"/>
 	</Item>
 	<Item Name="Types" Type="Folder">
 		<Item Name="Python Object Type.ctl" Type="VI" URL="../Python Object Type.ctl"/>
 		<Item Name="Python Object Reference.ctl" Type="VI" URL="../Python Object Reference.ctl"/>
+		<Item Name="Null Py Object Refnum.vi" Type="VI" URL="../Null Py Object Refnum.vi"/>
 	</Item>
 	<Item Name="Initialize Interpreter.vi" Type="VI" URL="../Initialize Interpreter.vi"/>
 	<Item Name="Finalize Interpreter.vi" Type="VI" URL="../Finalize Interpreter.vi"/>
@@ -25,5 +27,9 @@
 	<Item Name="Create Py Object Int32.vi" Type="VI" URL="../Create Py Object Int32.vi"/>
 	<Item Name="Destroy Py Object.vi" Type="VI" URL="../Destroy Py Object.vi"/>
 	<Item Name="Cast Py Object to I32.vi" Type="VI" URL="../Cast Py Object to I32.vi"/>
-	<Item Name="Call Function (Return Python Object).vi" Type="VI" URL="../Call Function (Return Python Object).vi"/>
+	<Item Name="Cast Py Object to String.vi" Type="VI" URL="../Cast Py Object to String.vi"/>
+	<Item Name="Print Session Scope.vi" Type="VI" URL="../Print Session Scope.vi"/>
+	<Item Name="Print Py Object.vi" Type="VI" URL="../Print Py Object.vi"/>
+	<Item Name="Call Function.vi" Type="VI" URL="../Call Function.vi"/>
+	<Item Name="Call Class Method.vi" Type="VI" URL="../Call Class Method.vi"/>
 </Library>

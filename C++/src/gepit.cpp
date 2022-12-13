@@ -226,7 +226,61 @@ int32_t cast_py_object_to_int(LVErrorClusterPtr errorPtr, SessionHandle session,
     return 0;
 }
 
-int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandle fnNameStrHandle, LVArray_t<1,LVRefNum>** argArrayHandle, LVRefNum* returnValuePtr){
+int32_t cast_py_object_to_string(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* objectPtr, LVStrHandlePtr strHandlePtr){
+    if (!session)
+    {
+        return writeInvalidSessionHandleErr(errorPtr, __func__);
+    }
+    try
+    {
+        if(session->isNullObject(objectPtr)){
+            return writeInvalidPythonObjectRefErr(errorPtr, __func__);
+        }
+        writeStringToStringHandlePtr(strHandlePtr, session->getObject(*objectPtr).cast<std::string>());
+    }
+    catch (pybind11::error_already_set const &e)
+    {
+        return writePythonExceptionErr(errorPtr, __func__, e.what());
+    }
+    catch (std::exception const &e)
+    {
+        return writeStdExceptionErr(errorPtr, __func__, e.what());
+    }
+    catch (...)
+    {
+        return writeUnkownErr(errorPtr, __func__);
+    }
+    return 0;
+}
+
+int32_t py_object_print_to_str(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* objectPtr, LVStrHandlePtr strHandlePtr){
+    if (!session)
+    {
+        return writeInvalidSessionHandleErr(errorPtr, __func__);
+    }
+    try
+    {
+        if(session->isNullObject(objectPtr)){
+            return writeInvalidPythonObjectRefErr(errorPtr, __func__);
+        }
+        writeStringToStringHandlePtr(strHandlePtr, pybind11::str(session->getObject(*objectPtr)));
+    }
+    catch (pybind11::error_already_set const &e)
+    {
+        return writePythonExceptionErr(errorPtr, __func__, e.what());
+    }
+    catch (std::exception const &e)
+    {
+        return writeStdExceptionErr(errorPtr, __func__, e.what());
+    }
+    catch (...)
+    {
+        return writeUnkownErr(errorPtr, __func__);
+    }
+    return 0;
+}
+
+int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* classInstancePtr, LVStrHandle fnNameStrHandle, LVArray_t<1,LVRefNum>** argArrayHandle, LVRefNum* returnValuePtr){
     if (!session)
     {
         return writeInvalidSessionHandleErr(errorPtr, __func__);
@@ -241,53 +295,88 @@ int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHa
         argObjects.reserve(nargs);
         LVRefNum* refPtr = (*argArrayHandle)->data();
         std::generate_n(std::back_inserter(argObjects), nargs, [&] { return session->getObject(*refPtr++);});
-
-        auto fn = session->scope[lvStrHandleToStdString(fnNameStrHandle).c_str()];
-
+        
+        // Get a Ref to the Function in the session scope or the class
+        std::string fnNameString = lvStrHandleToStdString(fnNameStrHandle);
+        pybind11::handle fnHandle;
+        
+        if(session->isNullObject(classInstancePtr)){
+            // handle is an item of the scope dict
+            fnHandle = session->scope[fnNameString.c_str()];
+        }
+        else{
+            // handle is an attribute of a class
+            fnHandle = session->getObject(*classInstancePtr).attr(fnNameString.c_str());
+        }
+        
         switch (argObjects.size()){
             case 0:
-                result = fn();
+                result = fnHandle.call();
                 break;
             case 1:
-                result = fn(argObjects[0]);
+                result = fnHandle.call(argObjects[0]);
                 break;
             case 2:
-                result = fn(argObjects[0],argObjects[1]);
+                result = fnHandle.call(argObjects[0],argObjects[1]);
                 break;
             case 3:
-                result = fn(argObjects[0],argObjects[1],argObjects[2]);
+                result = fnHandle.call(argObjects[0],argObjects[1],argObjects[2]);
                 break;
             case 4:
-                result = fn(argObjects[0],argObjects[1],argObjects[2],argObjects[3]);
+                result = fnHandle.call(argObjects[0],argObjects[1],argObjects[2],argObjects[3]);
                 break;
             case 5:
-                result = fn(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4]);
+                result = fnHandle.call(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4]);
                 break;
             case 6:
-                result = fn(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4], argObjects[5]);
+                result = fnHandle.call(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4], argObjects[5]);
                 break;
             case 7:
-                result = fn(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4], argObjects[5], argObjects[6]);
+                result = fnHandle.call(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4], argObjects[5], argObjects[6]);
                 break;
             case 8:
-                result = fn(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7]);
+                result = fnHandle.call(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7]);
                 break;
             case 9:
-                result = fn(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7], argObjects[8]);
+                result = fnHandle.call(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7], argObjects[8]);
                 break;
             case 10:
-                result = fn(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7], argObjects[8], argObjects[9]);
+                result = fnHandle.call(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7], argObjects[8], argObjects[9]);
                 break;
             case 11:
-                result = fn(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7], argObjects[8], argObjects[9], argObjects[10]);
+                result = fnHandle.call(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7], argObjects[8], argObjects[9], argObjects[10]);
                 break;
             case 12:
-                result = fn(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7], argObjects[8], argObjects[9], argObjects[10], argObjects[11]);
+                result = fnHandle.call(argObjects[0],argObjects[1],argObjects[2],argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7], argObjects[8], argObjects[9], argObjects[10], argObjects[11]);
                 break;
             default:
                 throw std::out_of_range("Number of arguments cannot exceed 12. Consider creating a python function which can use *args");
         }
         *returnValuePtr = session->keepObject(result);
+    }
+    catch (pybind11::error_already_set const &e)
+    {
+        return writePythonExceptionErr(errorPtr, __func__, e.what());
+    }
+    catch (std::exception const &e)
+    {
+        return writeStdExceptionErr(errorPtr, __func__, e.what());
+    }
+    catch (...)
+    {
+        return writeUnkownErr(errorPtr, __func__);
+    }
+    return 0;
+}
+
+int32_t scope_as_str(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandlePtr handle){
+    if (!session)
+    {
+        return writeInvalidSessionHandleErr(errorPtr, __func__);
+    }
+    try
+    {
+        writeStringToStringHandlePtr(handle, pybind11::str(session->scope));
     }
     catch (pybind11::error_already_set const &e)
     {

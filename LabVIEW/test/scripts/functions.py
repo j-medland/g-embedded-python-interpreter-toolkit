@@ -11,3 +11,7 @@ class MyCustomClass:
     
     def computeSum(self):
         return self.a + self.b
+
+if __name__ == "__main__":
+    x = MyCustomClass(100,200)
+    print(x.computeSum())

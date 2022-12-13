@@ -63,5 +63,9 @@ extern "C"{
     GEPIT_EXPORT int32_t destroy_py_object(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* objectPtr);
     GEPIT_EXPORT int32_t create_py_object_int(LVErrorClusterPtr errorPtr, SessionHandle session, int32_t value, LVRefNum* returnValuePtr);
     GEPIT_EXPORT int32_t cast_py_object_to_int(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* objectPtr, int32_t* returnValuePtr);
-    GEPIT_EXPORT int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandle fnNameStrHandle, LVArray_t<1,LVRefNum>** argArrayHandle, LVRefNum* returnValuePtr);
+    GEPIT_EXPORT int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* classInstancePtr, LVStrHandle fnNameStrHandle, LVArray_t<1,LVRefNum>** argArrayHandle, LVRefNum* returnValuePtr);
+    GEPIT_EXPORT int32_t scope_as_str(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandlePtr handle);
+    GEPIT_EXPORT int32_t cast_py_object_to_string(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* objectPtr, LVStrHandlePtr strHandlePtr);
+    GEPIT_EXPORT int32_t py_object_print_to_str(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* objectPtr, LVStrHandlePtr strHandlePtr);
+    
 }
