@@ -2,6 +2,8 @@
 
 Experimenting with embedding the Python Interpreter into LabVIEW
 
+![Block Diagram - LabVIEW code for calling a function from a Python Script](LabVIEW/img/call_function_test.png?raw=true)
+
 ## _I'm Sorry, What Now?_
 An execellent question!
 
