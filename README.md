@@ -4,7 +4,11 @@ Experimenting with embedding the Python Interpreter into LabVIEW
 
 ![Block Diagram - LabVIEW code for calling a function from a Python Script](LabVIEW/img/call_function_test.png?raw=true)
 
-https://github.com/j-medland/g-embedded-python-interpreter-toolkit/blob/eed72260f38770639f53665af8b4663872f8a9c2/LabVIEW/test/scripts/functions.py#L1:L3
+```python
+def my_custom_addition_fn(a :int, b: int):
+    return a + b
+
+```
 
 ## _I'm Sorry, What Now?_
 An execellent question!
