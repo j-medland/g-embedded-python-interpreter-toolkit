@@ -2,7 +2,7 @@
 
 Experimenting with embedding the Python Interpreter into LabVIEW. This is mostly a proof of concept to see what is possible and worthwhile.
 
-![Block Diagram - LabVIEW code for calling a function from a Python Script](LabVIEW/img/call_class_example?raw=true)
+![Block Diagram - LabVIEW code for calling a function from a Python Script](LabVIEW/img/call_class_example.png?raw=true)
 
 ```python
 class Counter:
