@@ -35,4 +35,5 @@
 	<Item Name="Call Function.vi" Type="VI" URL="../Call Function.vi"/>
 	<Item Name="Call Class Method.vi" Type="VI" URL="../Call Class Method.vi"/>
 	<Item Name="Call Function ATT.vim" Type="VI" URL="../Call Function ATT.vim"/>
+	<Item Name="test-call.vi" Type="VI" URL="../../test-call.vi"/>
 </Library>

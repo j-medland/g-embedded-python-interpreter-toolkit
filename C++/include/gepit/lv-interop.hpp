@@ -43,7 +43,7 @@ typedef struct {
 template <unsigned ndims, typename datatype>
 struct LVArray_t
 {
-    unsigned dims[ndims];
+    int32_t dims[ndims];
     uint8_t buffer[1];
 
     datatype* data(size_t byteOffset=0)

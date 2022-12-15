@@ -3,6 +3,7 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/embed.h>
+#include <pybind11/numpy.h>
 
 #include "gepit/lv-interop.hpp"
 #include "gepit_export.h"
@@ -71,14 +72,14 @@ enum LVNumericType : uint8_t {
 
 // specify void size
 #ifdef _32_BIT_ENV_
-typedef uint32_t lv_void_t;
+typedef uint32_t LVVoid_t;
 #else
-typedef uint64_t lv_void_t
+typedef uint64_t LVVoid_t
 #endif
 
 // define bitness dependent value types
-typedef lv_void_t LVPythonObjRef;
-typedef lv_void_t *LVArgumentClusterPtr;
+typedef LVVoid_t LVPythonObjRef;
+typedef LVVoid_t *LVArgumentClusterPtr;
 
 // set packing for LabVIEW Types
 #ifdef _32_BIT_ENV_
@@ -89,7 +90,6 @@ typedef struct {
     LVNumericType type;
     uint8_t ndims;
 } LVTypeInfo;
-
 
 typedef LVArray_t<1,LVTypeInfo> **LVArgumentTypeInfoHandle;
 
@@ -112,4 +112,53 @@ extern "C"{
     GEPIT_EXPORT int32_t scope_as_str(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandlePtr handle);
     GEPIT_EXPORT int32_t cast_py_object_to_string(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object, LVStrHandlePtr strHandlePtr);
     GEPIT_EXPORT int32_t py_object_print_to_str(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object, LVStrHandlePtr strHandlePtr); 
+}
+
+// template functions
+
+// create pybind11 format string
+template<typename T>
+std::string create_format_descriptor(){
+    return pybind11::format_descriptor<T>::format();
+}
+
+// create pybind11 dType
+template<typename T>
+pybind11::dtype create_dtype(){
+    return pybind11::dtype(create_format_descriptor<T>());
+}
+
+// create pybind11 array
+template<typename T>
+pybind11::array cast_untyped_LVArrayHandle_to_numpy_array(LVVoid_t handle, size_t ndims){
+    
+    // cast to 1D array of correct type - this will work fine with multi-dim arrays
+    LVArray_t<1, T>** typedHandle = reinterpret_cast<LVArray_t<1, T>**>(handle);
+
+    // get dims as pybind11::ssize_t vector
+    std::vector<pybind11::ssize_t> shape;
+    shape.reserve(ndims);
+
+    for( const auto &d : std::span<int32_t>((*typedHandle)->dims, ndims)){
+        shape.push_back(pybind11::ssize_t_cast(d));
+    }
+
+    // build strides pybind11::ssize_t vector
+    std::vector<pybind11::ssize_t> strides(ndims);
+    
+    // reverse iterate over strides and shape
+    auto shapeIter = shape.rbegin();
+    for(auto it = strides.rbegin(); it != strides.rend(); it++){
+        if(it == strides.rbegin()){
+            // last element
+            *it = pybind11::ssize_t_cast(sizeof(T));
+            continue;
+        }
+        // other values: take the previous value of strides
+        // and multiply by the current value in the shapeIter
+        *it = *shapeIter * (*(it-1));
+        shapeIter++;
+    }
+
+    return pybind11::array(create_dtype<T>(), shape, strides, (*typedHandle)->data());
 }
