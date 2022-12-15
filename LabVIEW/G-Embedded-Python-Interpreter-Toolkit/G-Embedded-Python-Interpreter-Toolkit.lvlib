@@ -11,15 +11,16 @@
 	<Item Name="Private" Type="Folder">
 		<Property Name="NI.LibItem.Scope" Type="Int">2</Property>
 		<Item Name="Merge Call Library Errors.vi" Type="VI" URL="../Merge Call Library Errors.vi"/>
-		<Item Name="Call.vi" Type="VI" URL="../Call.vi"/>
 		<Item Name="Python Object Reference to Pointer Sized Ref.vi" Type="VI" URL="../Python Object Reference to Pointer Sized Ref.vi"/>
 		<Item Name="Pointer Sized Ref to Python Object Reference.vi" Type="VI" URL="../Pointer Sized Ref to Python Object Reference.vi"/>
+		<Item Name="Type Information.ctl" Type="VI" URL="../Type Information.ctl"/>
 	</Item>
 	<Item Name="Types" Type="Folder">
 		<Item Name="Python Object Type.ctl" Type="VI" URL="../Python Object Type.ctl"/>
 		<Item Name="Python Object Reference.ctl" Type="VI" URL="../Python Object Reference.ctl"/>
 		<Item Name="Null Py Object Refnum.vi" Type="VI" URL="../Null Py Object Refnum.vi"/>
 	</Item>
+	<Item Name="Call.vi" Type="VI" URL="../Call.vi"/>
 	<Item Name="Initialize Interpreter.vi" Type="VI" URL="../Initialize Interpreter.vi"/>
 	<Item Name="Finalize Interpreter.vi" Type="VI" URL="../Finalize Interpreter.vi"/>
 	<Item Name="Create Session.vi" Type="VI" URL="../Create Session.vi"/>
@@ -36,4 +37,5 @@
 	<Item Name="Call Class Method.vi" Type="VI" URL="../Call Class Method.vi"/>
 	<Item Name="Call Function ATT.vim" Type="VI" URL="../Call Function ATT.vim"/>
 	<Item Name="test-call.vi" Type="VI" URL="../../test-call.vi"/>
+	<Item Name="Generate Function Call Argument Info.vi" Type="VI" URL="../Generate Function Call Argument Info.vi"/>
 </Library>

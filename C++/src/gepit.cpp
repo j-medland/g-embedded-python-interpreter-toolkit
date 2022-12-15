@@ -301,7 +301,7 @@ GEPIT_EXPORT int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle ses
         pybind11::object result = pybind11::none();
 
         // convert array of LVRefNums to vector of Python Objects
-        std::vector<pybind11::object> argObjects;
+        auto argObjects = convertArgsToPythonObjects(argsPtr, argTypesInfoHandle);
 
         // Get a Ref to the Function in the session scope or the class
         std::string fnNameString = lvStrHandleToStdString(fnNameStrHandle);
