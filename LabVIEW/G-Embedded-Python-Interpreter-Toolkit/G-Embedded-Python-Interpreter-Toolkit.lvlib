@@ -12,6 +12,8 @@
 		<Property Name="NI.LibItem.Scope" Type="Int">2</Property>
 		<Item Name="Merge Call Library Errors.vi" Type="VI" URL="../Merge Call Library Errors.vi"/>
 		<Item Name="Call.vi" Type="VI" URL="../Call.vi"/>
+		<Item Name="Python Object Reference to Pointer Sized Ref.vi" Type="VI" URL="../Python Object Reference to Pointer Sized Ref.vi"/>
+		<Item Name="Pointer Sized Ref to Python Object Reference.vi" Type="VI" URL="../Pointer Sized Ref to Python Object Reference.vi"/>
 	</Item>
 	<Item Name="Types" Type="Folder">
 		<Item Name="Python Object Type.ctl" Type="VI" URL="../Python Object Type.ctl"/>
@@ -32,4 +34,5 @@
 	<Item Name="Print Py Object.vi" Type="VI" URL="../Print Py Object.vi"/>
 	<Item Name="Call Function.vi" Type="VI" URL="../Call Function.vi"/>
 	<Item Name="Call Class Method.vi" Type="VI" URL="../Call Class Method.vi"/>
+	<Item Name="Call Function ATT.vim" Type="VI" URL="../Call Function ATT.vim"/>
 </Library>

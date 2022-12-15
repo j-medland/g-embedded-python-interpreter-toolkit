@@ -46,12 +46,57 @@ class Session
         const std::lock_guard lock(objStoreMutex);
         return !(key>0 && objStore.count(key));
     }
-    bool isNullObject(uint32_t* keyPtr){
-        return isNullObject(*keyPtr);
-    }
 };
 
 typedef Session *SessionHandle, **SessionHandlePtr;
+
+enum LVNumericType : uint8_t {
+    I8_ARRAY = 2,
+    I16_ARRAY = 3,
+    I32_ARRAY = 4,
+    I64_ARRAY = 5,
+    U8_ARRAY = 6,
+    U16_ARRAY = 7,
+    U32_ARRAY = 8,
+    U64_ARRAY = 9,
+    SGL_ARRAY = 10,
+    DBL_ARRAY = 11,
+    EXT_ARRAY =12,
+    CSG_ARRAY = 13,
+    CDB_ARRAY = 14,
+    CXT_ARRAY = 15,
+    BOOLEAN_ARRAY = 26,
+    PYOBJ = 40
+};
+
+// specify void size
+#ifdef _32_BIT_ENV_
+typedef uint32_t lv_void_t;
+#else
+typedef uint64_t lv_void_t
+#endif
+
+// define bitness dependent value types
+typedef lv_void_t LVPythonObjRef;
+typedef lv_void_t *LVArgumentClusterPtr;
+
+// set packing for LabVIEW Types
+#ifdef _32_BIT_ENV_
+#pragma pack(push, 1)
+#endif
+
+typedef struct {
+    LVNumericType type;
+    uint8_t ndims;
+} LVTypeInfo;
+
+
+typedef LVArray_t<1,LVTypeInfo> **LVArgumentTypeInfoHandle;
+
+// reset packing
+#ifdef _32_BIT_ENV_
+#pragma pack(pop)
+#endif
 
 extern "C"{
     GEPIT_EXPORT int32_t initialize_interpreter(LVErrorClusterPtr errorPtr, LVBoolean *alreadyRunningPtr);
@@ -60,12 +105,11 @@ extern "C"{
     GEPIT_EXPORT int32_t destroy_session(LVErrorClusterPtr errorPtr, SessionHandle session);
     GEPIT_EXPORT int32_t evaluate_script(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandle filePathStrHandle);
     GEPIT_EXPORT int32_t read_session_attribute_as_string(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandle attributeNameStrHandle, LVBoolean* found, LVStrHandlePtr valueStrHandlePtr);
-    GEPIT_EXPORT int32_t destroy_py_object(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* objectPtr);
-    GEPIT_EXPORT int32_t create_py_object_int(LVErrorClusterPtr errorPtr, SessionHandle session, int32_t value, LVRefNum* returnValuePtr);
-    GEPIT_EXPORT int32_t cast_py_object_to_int(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* objectPtr, int32_t* returnValuePtr);
-    GEPIT_EXPORT int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* classInstancePtr, LVStrHandle fnNameStrHandle, LVArray_t<1,LVRefNum>** argArrayHandle, LVRefNum* returnValuePtr);
+    GEPIT_EXPORT int32_t destroy_py_object(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object);
+    GEPIT_EXPORT int32_t create_py_object_int(LVErrorClusterPtr errorPtr, SessionHandle session, int32_t value, LVPythonObjRef* returnObjectPtr);
+    GEPIT_EXPORT int32_t cast_py_object_to_int(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object, int32_t* returnValuePtr);
+    GEPIT_EXPORT int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef classInstance, LVStrHandle fnNameStrHandle, LVArgumentClusterPtr argsPtr, LVArgumentTypeInfoHandle argTypesInfoHandle, LVPythonObjRef* returnObjectPtr);
     GEPIT_EXPORT int32_t scope_as_str(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandlePtr handle);
-    GEPIT_EXPORT int32_t cast_py_object_to_string(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* objectPtr, LVStrHandlePtr strHandlePtr);
-    GEPIT_EXPORT int32_t py_object_print_to_str(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* objectPtr, LVStrHandlePtr strHandlePtr);
-    
+    GEPIT_EXPORT int32_t cast_py_object_to_string(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object, LVStrHandlePtr strHandlePtr);
+    GEPIT_EXPORT int32_t py_object_print_to_str(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object, LVStrHandlePtr strHandlePtr); 
 }

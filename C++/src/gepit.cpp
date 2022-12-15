@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <span>
 
 #include "gepit/gepit.hpp"
 
@@ -7,6 +8,7 @@ inline MgErr writeInvalidPythonObjectRefErr(LVErrorClusterPtr errorPtr, std::str
 inline MgErr writeStdExceptionErr(LVErrorClusterPtr, std::string, std::string);
 inline MgErr writeInvalidSessionHandleErr(LVErrorClusterPtr, std::string);
 inline MgErr writeUnkownErr(LVErrorClusterPtr, std::string);
+inline std::vector<pybind11::object> convertArgsToPythonObjects(LVArgumentClusterPtr argsPtr, LVArgumentTypeInfoHandle argTypesInfoHandle);
 
 int32_t initialize_interpreter(LVErrorClusterPtr errorPtr, LVBoolean *alreadyRunningPtr)
 {
@@ -150,15 +152,14 @@ int32_t read_session_attribute_as_string(LVErrorClusterPtr errorPtr, SessionHand
     return 0;
 }
 
-int32_t destroy_py_object(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* objectPtr){
+int32_t destroy_py_object(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object){
     if (!session)
     {
         return writeInvalidSessionHandleErr(errorPtr, __func__);
     }
     try
     {
-        session->dropObject(*objectPtr);
-        *objectPtr = 0;
+        session->dropObject(object);
     }
     catch (pybind11::error_already_set const &e)
     {
@@ -175,14 +176,14 @@ int32_t destroy_py_object(LVErrorClusterPtr errorPtr, SessionHandle session, LVR
     return 0;
 };
 
-int32_t create_py_object_int(LVErrorClusterPtr errorPtr, SessionHandle session, int32_t value, LVRefNum* returnValuePtr){
+int32_t create_py_object_int(LVErrorClusterPtr errorPtr, SessionHandle session, int32_t value, LVPythonObjRef* returnObjectPtr){
     if (!session)
     {
         return writeInvalidSessionHandleErr(errorPtr, __func__);
     }
     try
     {
-        *returnValuePtr = session->keepObject(pybind11::int_(value));
+        *returnObjectPtr = session->keepObject(pybind11::int_(value));
     }
     catch (pybind11::error_already_set const &e)
     {
@@ -199,17 +200,17 @@ int32_t create_py_object_int(LVErrorClusterPtr errorPtr, SessionHandle session, 
     return 0;
 }
 
-int32_t cast_py_object_to_int(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* objectPtr, int32_t* returnValuePtr){
+int32_t cast_py_object_to_int(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object, int32_t* returnValuePtr){
     if (!session)
     {
         return writeInvalidSessionHandleErr(errorPtr, __func__);
     }
     try
     {
-        if(session->isNullObject(objectPtr)){
+        if(session->isNullObject(object)){
             return writeInvalidPythonObjectRefErr(errorPtr, __func__);
         }
-        *returnValuePtr = session->getObject(*objectPtr).cast<int32_t>();
+        *returnValuePtr = session->getObject(object).cast<int32_t>();
     }
     catch (pybind11::error_already_set const &e)
     {
@@ -226,17 +227,17 @@ int32_t cast_py_object_to_int(LVErrorClusterPtr errorPtr, SessionHandle session,
     return 0;
 }
 
-int32_t cast_py_object_to_string(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* objectPtr, LVStrHandlePtr strHandlePtr){
+int32_t cast_py_object_to_string(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object, LVStrHandlePtr strHandlePtr){
     if (!session)
     {
         return writeInvalidSessionHandleErr(errorPtr, __func__);
     }
     try
     {
-        if(session->isNullObject(objectPtr)){
+        if(session->isNullObject(object)){
             return writeInvalidPythonObjectRefErr(errorPtr, __func__);
         }
-        writeStringToStringHandlePtr(strHandlePtr, session->getObject(*objectPtr).cast<std::string>());
+        writeStringToStringHandlePtr(strHandlePtr, session->getObject(object).cast<std::string>());
     }
     catch (pybind11::error_already_set const &e)
     {
@@ -253,17 +254,17 @@ int32_t cast_py_object_to_string(LVErrorClusterPtr errorPtr, SessionHandle sessi
     return 0;
 }
 
-int32_t py_object_print_to_str(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* objectPtr, LVStrHandlePtr strHandlePtr){
+int32_t py_object_print_to_str(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object, LVStrHandlePtr strHandlePtr){
     if (!session)
     {
         return writeInvalidSessionHandleErr(errorPtr, __func__);
     }
     try
     {
-        if(session->isNullObject(objectPtr)){
+        if(session->isNullObject(object)){
             return writeInvalidPythonObjectRefErr(errorPtr, __func__);
         }
-        writeStringToStringHandlePtr(strHandlePtr, pybind11::str(session->getObject(*objectPtr)));
+        writeStringToStringHandlePtr(strHandlePtr, pybind11::str(session->getObject(object)));
     }
     catch (pybind11::error_already_set const &e)
     {
@@ -280,7 +281,7 @@ int32_t py_object_print_to_str(LVErrorClusterPtr errorPtr, SessionHandle session
     return 0;
 }
 
-int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNum* classInstancePtr, LVStrHandle fnNameStrHandle, LVArray_t<1,LVRefNum>** argArrayHandle, LVRefNum* returnValuePtr){
+GEPIT_EXPORT int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef classInstance, LVStrHandle fnNameStrHandle, LVArgumentClusterPtr argsPtr, LVArgumentTypeInfoHandle argTypesInfoHandle, LVPythonObjRef* returnObjectPtr){
     if (!session)
     {
         return writeInvalidSessionHandleErr(errorPtr, __func__);
@@ -290,23 +291,19 @@ int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNu
         pybind11::object result = pybind11::none();
 
         // convert array of LVRefNums to vector of Python Objects
-        size_t nargs = argArrayHandle && *argArrayHandle && (*argArrayHandle)->dims ? (*argArrayHandle)->dims[0] : 0;
         std::vector<pybind11::object> argObjects;
-        argObjects.reserve(nargs);
-        LVRefNum* refPtr = (*argArrayHandle)->data();
-        std::generate_n(std::back_inserter(argObjects), nargs, [&] { return session->getObject(*refPtr++);});
         
         // Get a Ref to the Function in the session scope or the class
         std::string fnNameString = lvStrHandleToStdString(fnNameStrHandle);
         pybind11::handle fnHandle;
         
-        if(session->isNullObject(classInstancePtr)){
+        if(session->isNullObject(classInstance)){
             // handle is an item of the scope dict
             fnHandle = session->scope[fnNameString.c_str()];
         }
         else{
             // handle is an attribute of a class
-            fnHandle = session->getObject(*classInstancePtr).attr(fnNameString.c_str());
+            fnHandle = session->getObject(classInstance).attr(fnNameString.c_str());
         }
         
         switch (argObjects.size()){
@@ -352,7 +349,7 @@ int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle session, LVRefNu
             default:
                 throw std::out_of_range("Number of arguments cannot exceed 12. Consider creating a python function which can use *args");
         }
-        *returnValuePtr = session->keepObject(result);
+        *returnObjectPtr = session->keepObject(result);
     }
     catch (pybind11::error_already_set const &e)
     {
@@ -419,3 +416,21 @@ inline MgErr writeUnkownErr(LVErrorClusterPtr errorPtr, std::string functionName
 {
     return writeErrorToErrorClusterPtr(errorPtr, errorCodes::UnknownErr, functionName, "");
 }
+
+inline std::vector<pybind11::object> convertArgsToPythonObjects(LVArgumentClusterPtr argsPtr, LVArgumentTypeInfoHandle argTypesInfoHandle){
+    size_t nargs = argTypesInfoHandle && (*argTypesInfoHandle) && (*argTypesInfoHandle)->dims ? (*argTypesInfoHandle)->dims[0] : 0;
+    std::vector<pybind11::object> argObjects;
+    argObjects.reserve(nargs);
+
+
+
+    
+
+}
+
+        // // convert array of LVRefNums to vector of Python Objects
+        // size_t nargs = argArrayHandle && *argArrayHandle && (*argArrayHandle)->dims ? (*argArrayHandle)->dims[0] : 0;
+        // std::vector<pybind11::object> argObjects;
+        // argObjects.reserve(nargs);
+        // LVPythonObjRef* refPtr = (*argArrayHandle)->data();
+        // std::generate_n(std::back_inserter(argObjects), nargs, [&] { return session->getObject(*refPtr++);});
