@@ -21,6 +21,7 @@
 		<Item Name="G-Embedded-Python-Interpreter-Toolkit.lvlib" Type="Library" URL="../G-Embedded-Python-Interpreter-Toolkit/G-Embedded-Python-Interpreter-Toolkit.lvlib"/>
 		<Item Name="gepit.cp310.32.dll" Type="Document" URL="../bin/gepit.cp310.32.dll"/>
 		<Item Name="iterate-types.vi" Type="VI" URL="../iterate-types.vi"/>
+		<Item Name="offset.vi" Type="VI" URL="../offset.vi"/>
 		<Item Name="Test.vi" Type="VI" URL="../Test.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="vi.lib" Type="Folder">
@@ -398,6 +399,7 @@
 				<Item Name="VI Scripting - Traverse.lvlib" Type="Library" URL="/&lt;vilib&gt;/Utility/traverseref.llb/VI Scripting - Traverse.lvlib"/>
 				<Item Name="whitespace.ctl" Type="VI" URL="/&lt;vilib&gt;/Utility/error.llb/whitespace.ctl"/>
 			</Item>
+			<Item Name="test-call.vi" Type="VI" URL="../test-call.vi"/>
 		</Item>
 		<Item Name="Build Specifications" Type="Build"/>
 	</Item>

@@ -22,7 +22,9 @@ add_library(${PROJECT_NAME} SHARED)
 # header files (relative to include/gepit)
 set(HEADER_FILES 
     lv-interop.hpp
-    gepit.hpp)
+    gepit.hpp
+    call-function.hpp
+)
 
 # prepend include path
 list(TRANSFORM HEADER_FILES PREPEND ${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}/)
@@ -30,8 +32,13 @@ list(TRANSFORM HEADER_FILES PREPEND ${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_
 # define target_sources
 target_sources(${PROJECT_NAME}
     PRIVATE
+    src/call-function.cpp
+    src/eval.cpp
+    src/interpreter.cpp
     src/lv-interop.cpp
-    src/gepit.cpp
+    src/py-object.cpp
+    src/session.cpp
+    src/util.cpp
     ${HEADER_FILES}
 )
 
