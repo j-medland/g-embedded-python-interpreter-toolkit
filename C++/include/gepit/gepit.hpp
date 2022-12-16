@@ -72,7 +72,6 @@ enum LVNumericType : uint8_t
     CSG_ARRAY = 13,
     CDB_ARRAY = 14,
     CXT_ARRAY = 15,
-    BOOLEAN_ARRAY = 26,
     PYOBJ = 40
 };
 
@@ -143,70 +142,9 @@ template <typename T>
 pybind11::array cast_untyped_LVArrayHandle_to_numpy_array(LVVoid_t handle, size_t ndims)
 {
 
-    int32_t *dimsPtr = nullptr;
-    T *buffer = nullptr;
-
-    switch (ndims)
-    {
-    case 1:
-    {
-        auto typedHandle = reinterpret_cast<LVArray_t<1, T> **>(handle);
-        dimsPtr = (*typedHandle)->dims;
-        buffer = (*typedHandle)->data();
-    }
-        break;
-    case 2:
-    {
-        auto typedHandle = reinterpret_cast<LVArray_t<2, T> **>(handle);
-        dimsPtr = (*typedHandle)->dims;
-        buffer = (*typedHandle)->data();
-    }
-        break;
-    case 3:
-    {
-        auto typedHandle = reinterpret_cast<LVArray_t<3, T> **>(handle);
-        dimsPtr = (*typedHandle)->dims;
-        buffer = (*typedHandle)->data();
-    }
-        break;
-    case 4:
-    {
-        auto typedHandle = reinterpret_cast<LVArray_t<4, T> **>(handle);
-        dimsPtr = (*typedHandle)->dims;
-        buffer = (*typedHandle)->data();
-    }
-        break;
-    case 5:
-    {
-        auto typedHandle = reinterpret_cast<LVArray_t<5, T> **>(handle);
-        dimsPtr = (*typedHandle)->dims;
-        buffer = (*typedHandle)->data();
-    }
-        break;
-    case 6:
-    {
-        auto typedHandle = reinterpret_cast<LVArray_t<6, T> **>(handle);
-        dimsPtr = (*typedHandle)->dims;
-        buffer = (*typedHandle)->data();
-    }
-        break;
-    case 7:
-    {
-        auto typedHandle = reinterpret_cast<LVArray_t<7, T> **>(handle);
-        dimsPtr = (*typedHandle)->dims;
-        buffer = (*typedHandle)->data();
-    }
-        break;
-    case 8:
-    {
-        auto typedHandle = reinterpret_cast<LVArray_t<8, T> **>(handle);
-        dimsPtr = (*typedHandle)->dims;
-        buffer = (*typedHandle)->data();
-    }
-        break;
-    default:
-        throw std::out_of_range("Array exceeds 8 dimensions");
-    }
+    int32_t* dimsPtr = *(reinterpret_cast<int32_t**>(handle));
+    // get buffer by offsetting dimsPtr by ndims
+    T *buffer = reinterpret_cast<T*>(dimsPtr + ndims);
 
     // get dims as pybind11::ssize_t vector
     std::vector<pybind11::ssize_t> shape;
@@ -236,5 +174,16 @@ pybind11::array cast_untyped_LVArrayHandle_to_numpy_array(LVVoid_t handle, size_
         shapeIter++;
     }
 
-    return pybind11::array(create_dtype<T>(), shape, strides, buffer);
+    return pybind11::array(pybind11::dtype.of<T>(), shape, strides, buffer);
+}
+
+// templates to help with calling a handle's () operator with a std::vector of args
+template<std::size_t... S>
+pybind11::object function_call_with_args_vector(pybind11::handle &handle, const std::vector<pybind11::object>& args, std::index_sequence<S...>) {
+    return handle(args[S]...);
+}
+
+template<std::size_t size>
+pybind11::object function_call_with_args_vector(pybind11::handle &handle, const std::vector<pybind11::object>& args) {
+    return function_call_with_args_vector(handle, args, std::make_index_sequence<size>());
 }

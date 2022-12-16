@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <span>
+#include <complex>
 
 #include "gepit/gepit.hpp"
 
@@ -8,7 +9,7 @@ inline MgErr writeInvalidPythonObjectRefErr(LVErrorClusterPtr errorPtr, std::str
 inline MgErr writeStdExceptionErr(LVErrorClusterPtr, std::string, std::string);
 inline MgErr writeInvalidSessionHandleErr(LVErrorClusterPtr, std::string);
 inline MgErr writeUnkownErr(LVErrorClusterPtr, std::string);
-std::vector<pybind11::object> convertArgsToPythonObjects(LVArgumentClusterPtr argsPtr, LVArgumentTypeInfoHandle argTypesInfoHandle);
+std::vector<pybind11::object> convertArgsToPythonObjects(SessionHandle session, LVArgumentClusterPtr argsPtr, LVArgumentTypeInfoHandle argTypesInfoHandle);
 
 int32_t initialize_interpreter(LVErrorClusterPtr errorPtr, LVBoolean *alreadyRunningPtr)
 {
@@ -301,7 +302,7 @@ GEPIT_EXPORT int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle ses
         pybind11::object result = pybind11::none();
 
         // convert array of LVRefNums to vector of Python Objects
-        auto argObjects = convertArgsToPythonObjects(argsPtr, argTypesInfoHandle);
+        auto argObjects = convertArgsToPythonObjects(session, argsPtr, argTypesInfoHandle);
 
         // Get a Ref to the Function in the session scope or the class
         std::string fnNameString = lvStrHandleToStdString(fnNameStrHandle);
@@ -318,46 +319,48 @@ GEPIT_EXPORT int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle ses
             fnHandle = session->getObject(classInstance).attr(fnNameString.c_str());
         }
 
+        // C++ needs the argument expanded function calls to exist at compile time
+        // hence this switch and a physical limit on the number of args
         switch (argObjects.size())
         {
         case 0:
-            result = fnHandle.call();
+            result = fnHandle();
             break;
         case 1:
-            result = fnHandle.call(argObjects[0]);
+            result = function_call_with_args_vector<1>(fnHandle, argObjects);
             break;
         case 2:
-            result = fnHandle.call(argObjects[0], argObjects[1]);
+            result = function_call_with_args_vector<2>(fnHandle, argObjects);
             break;
         case 3:
-            result = fnHandle.call(argObjects[0], argObjects[1], argObjects[2]);
+            result = function_call_with_args_vector<3>(fnHandle, argObjects);
             break;
         case 4:
-            result = fnHandle.call(argObjects[0], argObjects[1], argObjects[2], argObjects[3]);
+            result = function_call_with_args_vector<4>(fnHandle, argObjects);
             break;
         case 5:
-            result = fnHandle.call(argObjects[0], argObjects[1], argObjects[2], argObjects[3], argObjects[4]);
+            result = function_call_with_args_vector<5>(fnHandle, argObjects);
             break;
         case 6:
-            result = fnHandle.call(argObjects[0], argObjects[1], argObjects[2], argObjects[3], argObjects[4], argObjects[5]);
+            result = function_call_with_args_vector<6>(fnHandle, argObjects);
             break;
         case 7:
-            result = fnHandle.call(argObjects[0], argObjects[1], argObjects[2], argObjects[3], argObjects[4], argObjects[5], argObjects[6]);
+            result = function_call_with_args_vector<7>(fnHandle, argObjects);
             break;
         case 8:
-            result = fnHandle.call(argObjects[0], argObjects[1], argObjects[2], argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7]);
+            result = function_call_with_args_vector<8>(fnHandle, argObjects);
             break;
         case 9:
-            result = fnHandle.call(argObjects[0], argObjects[1], argObjects[2], argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7], argObjects[8]);
+            result = function_call_with_args_vector<9>(fnHandle, argObjects);
             break;
         case 10:
-            result = fnHandle.call(argObjects[0], argObjects[1], argObjects[2], argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7], argObjects[8], argObjects[9]);
+            result = function_call_with_args_vector<10>(fnHandle, argObjects);
             break;
         case 11:
-            result = fnHandle.call(argObjects[0], argObjects[1], argObjects[2], argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7], argObjects[8], argObjects[9], argObjects[10]);
+            result = function_call_with_args_vector<11>(fnHandle, argObjects);
             break;
         case 12:
-            result = fnHandle.call(argObjects[0], argObjects[1], argObjects[2], argObjects[3], argObjects[4], argObjects[5], argObjects[6], argObjects[7], argObjects[8], argObjects[9], argObjects[10], argObjects[11]);
+            result = function_call_with_args_vector<12>(fnHandle, argObjects);
             break;
         default:
             throw std::out_of_range("Number of arguments cannot exceed 12. Consider creating a python function which can use *args");
@@ -430,7 +433,7 @@ inline MgErr writeUnkownErr(LVErrorClusterPtr errorPtr, std::string functionName
     return writeErrorToErrorClusterPtr(errorPtr, errorCodes::UnknownErr, functionName, "");
 }
 
-std::vector<pybind11::object> convertArgsToPythonObjects(LVArgumentClusterPtr argsPtr, LVArgumentTypeInfoHandle argTypesInfoHandle)
+std::vector<pybind11::object> convertArgsToPythonObjects(SessionHandle session, LVArgumentClusterPtr argsPtr, LVArgumentTypeInfoHandle argTypesInfoHandle)
 {
     size_t nargs = argTypesInfoHandle && (*argTypesInfoHandle) && (*argTypesInfoHandle)->dims ? (*argTypesInfoHandle)->dims[0] : 0;
     std::vector<pybind11::object> argObjects;
@@ -448,31 +451,70 @@ std::vector<pybind11::object> convertArgsToPythonObjects(LVArgumentClusterPtr ar
         case LVNumericType::I8_ARRAY:
             argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<int8_t>(*argIter, typeInfo.ndims));
             break;
+
+        case LVNumericType::I16_ARRAY:
+            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<int16_t>(*argIter, typeInfo.ndims));
+            break;
+
+        case LVNumericType::I32_ARRAY:
+            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<int32_t>(*argIter, typeInfo.ndims));
+            break;
+
+        case LVNumericType::I64_ARRAY:
+            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<int64_t>(*argIter, typeInfo.ndims));
+            break;
+
+        case LVNumericType::U8_ARRAY:
+            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<uint8_t>(*argIter, typeInfo.ndims));
+            break;
+
+        case LVNumericType::U16_ARRAY:
+            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<uint16_t>(*argIter, typeInfo.ndims));
+            break;
+
+        case LVNumericType::U32_ARRAY:
+            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<uint32_t>(*argIter, typeInfo.ndims));
+            break;
+
+        case LVNumericType::U64_ARRAY:
+            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<uint64_t>(*argIter, typeInfo.ndims));
+            break;
+
+        case LVNumericType::SGL_ARRAY:
+            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<float>(*argIter, typeInfo.ndims));
+            break;
+
+        case LVNumericType::DBL_ARRAY:
+            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<double>(*argIter, typeInfo.ndims));
+            break;
+
+        case LVNumericType::EXT_ARRAY:
+            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<long double>(*argIter, typeInfo.ndims));
+            break;
+
+        case LVNumericType::CSG_ARRAY:
+            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<std::complex<float>>(*argIter, typeInfo.ndims));
+            break;
+
+        case LVNumericType::CDB_ARRAY:
+            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<std::complex<double>>(*argIter, typeInfo.ndims));
+            break;
+
+        case LVNumericType::CXT_ARRAY:
+            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<std::complex<long double>>(*argIter, typeInfo.ndims));
+            break;
+
+        case LVNumericType::PYOBJ:
+            if (session->isNullObject(*argIter))
+            {
+                throw std::out_of_range("Null or Invalid Python Object supplied as a Function Argument.");
+            }
+            argObjects.push_back(session->getObject(*argIter));
+            break;
+
+        default:
+            throw std::out_of_range("Non-supported type supplied as a Function Argument.");
         }
     }
     return argObjects;
-}
-
-extern "C"
-{
-    GEPIT_EXPORT int32_t test(LVErrorClusterPtr errorPtr, LVArgumentClusterPtr argsPtr, LVArgumentTypeInfoHandle argTypesInfoHandle)
-    {
-        try
-        {
-            auto x = convertArgsToPythonObjects(argsPtr, argTypesInfoHandle);
-        }
-        catch (pybind11::error_already_set const &e)
-        {
-            return writePythonExceptionErr(errorPtr, __func__, e.what());
-        }
-        catch (std::exception const &e)
-        {
-            return writeStdExceptionErr(errorPtr, __func__, e.what());
-        }
-        catch (...)
-        {
-            return writeUnkownErr(errorPtr, __func__);
-        }
-        return 0;
-    }
 }
