@@ -14,7 +14,6 @@
 		<Item Name="Merge Call Library Errors.vi" Type="VI" URL="../Merge Call Library Errors.vi"/>
 		<Item Name="Python Object Reference to Pointer Sized Ref.vi" Type="VI" URL="../Python Object Reference to Pointer Sized Ref.vi"/>
 		<Item Name="Pointer Sized Ref to Python Object Reference.vi" Type="VI" URL="../Pointer Sized Ref to Python Object Reference.vi"/>
-		<Item Name="Call_.vim" Type="VI" URL="../Call_.vim"/>
 		<Item Name="Call.vim" Type="VI" URL="../Call.vim"/>
 	</Item>
 	<Item Name="Types" Type="Folder">
@@ -41,7 +40,7 @@
 	<Item Name="Read Session Attribute as String.vi" Type="VI" URL="../Read Session Attribute as String.vi"/>
 	<Item Name="Destroy Py Object.vi" Type="VI" URL="../Destroy Py Object.vi"/>
 	<Item Name="Print Py Object.vi" Type="VI" URL="../Print Py Object.vi"/>
+	<Item Name="Generate Function Call Argument Info.vi" Type="VI" URL="../Generate Function Call Argument Info.vi"/>
 	<Item Name="Call Function.vim" Type="VI" URL="../Call Function.vim"/>
 	<Item Name="Call Class Method.vim" Type="VI" URL="../Call Class Method.vim"/>
-	<Item Name="Generate Function Call Argument Info.vi" Type="VI" URL="../Generate Function Call Argument Info.vi"/>
 </Library>

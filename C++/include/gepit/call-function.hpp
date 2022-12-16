@@ -51,7 +51,9 @@ pybind11::array cast_untyped_LVArrayHandle_to_numpy_array(LVVoid_t handle, size_
         shapeIter++;
     }
     
-    return pybind11::array(create_dtype<T>(), shape, strides, buffer);
+    auto dtype = create_dtype<T>();
+    // add a dummy base array param to set ndarray.owndata to false;
+    return pybind11::array(dtype, shape, strides, buffer, pybind11::array(dtype, shape, strides, nullptr));
 }
 
 // templates to help with calling a handle's () operator with a std::vector of args
