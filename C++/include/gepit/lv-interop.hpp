@@ -20,7 +20,6 @@
 #define LV_DOUBLE_TYPECODE 10
 
 typedef int32_t MgErr;
-typedef uint32_t LVRefNum;
 
 // define types with byte-packing specified
 // cmake sizeof void used to determine bitness
@@ -44,7 +43,7 @@ typedef struct {
 template <unsigned ndims, typename datatype>
 struct LVArray_t
 {
-    unsigned dims[ndims];
+    int32_t dims[ndims];
     uint8_t buffer[1];
 
     datatype* data(size_t byteOffset=0)

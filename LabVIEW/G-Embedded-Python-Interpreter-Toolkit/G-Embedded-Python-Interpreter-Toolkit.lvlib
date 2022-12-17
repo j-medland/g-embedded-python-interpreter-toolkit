@@ -10,26 +10,38 @@
 </Property>
 	<Item Name="Private" Type="Folder">
 		<Property Name="NI.LibItem.Scope" Type="Int">2</Property>
+		<Item Name="Bad Type Error.vi" Type="VI" URL="../Bad Type Error.vi"/>
 		<Item Name="Merge Call Library Errors.vi" Type="VI" URL="../Merge Call Library Errors.vi"/>
-		<Item Name="Call.vi" Type="VI" URL="../Call.vi"/>
+		<Item Name="Python Object Reference to Pointer Sized Ref.vi" Type="VI" URL="../Python Object Reference to Pointer Sized Ref.vi"/>
+		<Item Name="Pointer Sized Ref to Python Object Reference.vi" Type="VI" URL="../Pointer Sized Ref to Python Object Reference.vi"/>
+		<Item Name="Call.vim" Type="VI" URL="../Call.vim"/>
 	</Item>
 	<Item Name="Types" Type="Folder">
 		<Item Name="Python Object Type.ctl" Type="VI" URL="../Python Object Type.ctl"/>
 		<Item Name="Python Object Reference.ctl" Type="VI" URL="../Python Object Reference.ctl"/>
+		<Item Name="Type Information.ctl" Type="VI" URL="../Type Information.ctl"/>
 		<Item Name="Null Py Object Refnum.vi" Type="VI" URL="../Null Py Object Refnum.vi"/>
+	</Item>
+	<Item Name="Polymorphic Implementations" Type="Folder">
+		<Item Name="Create Py Object" Type="Folder">
+			<Item Name="Create Py Object Int32.vi" Type="VI" URL="../Create Py Object Int32.vi"/>
+		</Item>
+		<Item Name="Cast Py Object" Type="Folder">
+			<Item Name="Cast Py Object to I32.vi" Type="VI" URL="../Cast Py Object to I32.vi"/>
+			<Item Name="Cast Py Object to String.vi" Type="VI" URL="../Cast Py Object to String.vi"/>
+		</Item>
 	</Item>
 	<Item Name="Initialize Interpreter.vi" Type="VI" URL="../Initialize Interpreter.vi"/>
 	<Item Name="Finalize Interpreter.vi" Type="VI" URL="../Finalize Interpreter.vi"/>
 	<Item Name="Create Session.vi" Type="VI" URL="../Create Session.vi"/>
 	<Item Name="Destroy Session.vi" Type="VI" URL="../Destroy Session.vi"/>
+	<Item Name="Print Session Scope.vi" Type="VI" URL="../Print Session Scope.vi"/>
 	<Item Name="Evaluate Script.vi" Type="VI" URL="../Evaluate Script.vi"/>
 	<Item Name="Read Session Attribute as String.vi" Type="VI" URL="../Read Session Attribute as String.vi"/>
-	<Item Name="Create Py Object Int32.vi" Type="VI" URL="../Create Py Object Int32.vi"/>
 	<Item Name="Destroy Py Object.vi" Type="VI" URL="../Destroy Py Object.vi"/>
-	<Item Name="Cast Py Object to I32.vi" Type="VI" URL="../Cast Py Object to I32.vi"/>
-	<Item Name="Cast Py Object to String.vi" Type="VI" URL="../Cast Py Object to String.vi"/>
-	<Item Name="Print Session Scope.vi" Type="VI" URL="../Print Session Scope.vi"/>
 	<Item Name="Print Py Object.vi" Type="VI" URL="../Print Py Object.vi"/>
-	<Item Name="Call Function.vi" Type="VI" URL="../Call Function.vi"/>
-	<Item Name="Call Class Method.vi" Type="VI" URL="../Call Class Method.vi"/>
+	<Item Name="Generate Function Call Argument Info.vi" Type="VI" URL="../Generate Function Call Argument Info.vi"/>
+	<Item Name="Call Function.vim" Type="VI" URL="../Call Function.vim"/>
+	<Item Name="Call Class Method.vim" Type="VI" URL="../Call Class Method.vim"/>
+	<Item Name="Cast Py Object to DBL.vi" Type="VI" URL="../Cast Py Object to DBL.vi"/>
 </Library>

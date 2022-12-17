@@ -1,3 +1,6 @@
+def return_one_hundred():
+    return 100
+
 def my_custom_addition_fn(a :int, b: int):
     return a + b
 

@@ -2,24 +2,39 @@
 
 Experimenting with embedding the Python Interpreter into LabVIEW. This is mostly a proof of concept to see what is possible and worthwhile.
 
+<<<<<<< HEAD
 ![Block Diagram - LabVIEW code for calling a function from a Python Script](LabVIEW/img/call_class_example.png?raw=true)
+=======
+![Front Panel - The Moving Average Example](LabVIEW/img/moving-average-example.gif?raw=true)
+![Block Diagram - LabVIEW code for calling a function from a Python Script](LabVIEW/img/moving-average-example.png?raw=true)
+>>>>>>> origin/f-lv-arrays-as-numpy-arrays
 
 ```python
-class Counter:
-    x: int
+import numpy as np
 
-    def __init__(self,startingValue : int):
-        self.x = startingValue
+class MovingAverager:
+    depth = 5
+    insertAt = 0
+    sampleSize = 0
+
+    def __init__(self, sampleSize : int):
+        self.memory = np.zeros(self.depth * sampleSize)
+        self.sampleSize = sampleSize
     
-    def increment(self):
-        self.x += 1
-        return self.x
-
-    def decrement(self):
-        self.x -= 1
-        return self.x
+    def add_sample(self, sample : np.ndarray):
+        end = self.insertAt+self.sampleSize
+        self.memory[self.insertAt:end] = sample
+        self.insertAt = end % (self.depth * self.sampleSize)
+        return self.memory.mean()
 
 ```
+
+## Features
+
+* Evaluate Scripts from File, import modules like normal
+* Call class constructors and methods without a wrapper
+* Pass LabVIEW Multi-Dimensional Arrays as Read-Only `numpy.ndarrays` (Real Numerical types only)
+* Create and Casting Python Objects to-from LabVEW types (in progress)
 
 ## Motivation
 
@@ -27,7 +42,7 @@ Python and LabVIEW are natural frenemies but what if you could call Python Scrip
 
 Then, what if we could also bring C++ to the party? Why that would be the ultimate trio:
 
-The ease of programming C++, the performance of Python and the massive potential user base of literally tens of LabVIEW developers.
+The ease of programming C++, the performance of Python and the massive potential user base of literally _tens_ of LabVIEW developers.
 
 _So why not just use the [the Python Integration Node](https://www.ni.com/docs/en-US/bundle/labview/page/glang/python_node.html)?_
 
@@ -50,8 +65,10 @@ Working directly with Python's C interpreter interface is tricky so we are going
 
 ## Building Binaries
 * [clone this repo with submodules](https://stackoverflow.com/a/4438292/5609762)
-* Use cmake to configure and build. The `.vscode-example` directory contains the settings for vscode C++ and CMake extensions
-* **Do Not Use a Normal Debug Build** - the Python DLL loads lots of dependencies so unless you compiled a special debug build of Python, a mix of debug and non-debug libs will be loaded and cause issues. You can debug your C++ code using a _Release-With-Debug-Info_ build and the provided vscode `launch.json`. Build the `install` target to update the binary in the `LabVIEW/bin` directory.
+* Use cmake to configure, build and install. The `.vscode-example` directory contains the settings for vscode C++ and CMake extensions
+* Debugging
+    * If you have issues building the binaries in the _Debug_ configuration, try the alternative _Release-With-Debug-Info_. This can happen when some of the Python dependencies attempt to load both the Release and Debug versions, causing conflicts. Unfortunately any Release-type build will optimize unused code which makes debugging more difficult; Installing the Debug Files during Python installation may help. 
+    * Settings for debugging the DLL in LabVIEW are provided in the vscode `launch.json`. Build the `install` target to update the binary in the `LabVIEW/bin` directory.
 
 ## Contributions
 Very welcome. Open an issue to discuss anything or to put me right on how the Python Integration node works.
