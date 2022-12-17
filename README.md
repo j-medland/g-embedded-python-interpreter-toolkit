@@ -2,24 +2,35 @@
 
 Experimenting with embedding the Python Interpreter into LabVIEW. This is mostly a proof of concept to see what is possible and worthwhile.
 
-![Block Diagram - LabVIEW code for calling a function from a Python Script](LabVIEW/img/call_class_example.png?raw=true)
+![Front Panel - The Moving Average Example](LabVIEW/img/moving-average-example.gif?raw=true)
+![Block Diagram - LabVIEW code for calling a function from a Python Script](LabVIEW/img/moving-average-example.png?raw=true)
 
 ```python
-class Counter:
-    x: int
+import numpy as np
 
-    def __init__(self,startingValue : int):
-        self.x = startingValue
+class MovingAverager:
+    depth = 5
+    insertAt = 0
+    sampleSize = 0
+
+    def __init__(self, sampleSize : int):
+        self.memory = np.zeros(self.depth * sampleSize)
+        self.sampleSize = sampleSize
     
-    def increment(self):
-        self.x += 1
-        return self.x
-
-    def decrement(self):
-        self.x -= 1
-        return self.x
+    def add_sample(self, sample : np.ndarray):
+        end = self.insertAt+self.sampleSize
+        self.memory[self.insertAt:end] = sample
+        self.insertAt = end % (self.depth * self.sampleSize)
+        return self.memory.mean()
 
 ```
+
+## Features
+
+* Evaluate Scripts from File, import modules like normal
+* Call class constructors and methods without a wrapper
+* Pass LabVIEW Multi-Dimensional Arrays as Read-Only `numpy.ndarrays` (Real Numerical types only)
+* Create and Casting Python Objects to-from LabVEW types (in progress)
 
 ## Motivation
 
