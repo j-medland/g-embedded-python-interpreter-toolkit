@@ -13,6 +13,7 @@
 		<Property Name="specify.custom.address" Type="Bool">false</Property>
 		<Item Name="examples" Type="Folder">
 			<Item Name="Calling Class Methods.vi" Type="VI" URL="../examples/Calling Class Methods.vi"/>
+			<Item Name="Passing Arrays as Read-Only ndarrays.vi" Type="VI" URL="../examples/Passing Arrays as Read-Only ndarrays.vi"/>
 		</Item>
 		<Item Name="test" Type="Folder" URL="../test">
 			<Property Name="NI.DISK" Type="Bool">true</Property>

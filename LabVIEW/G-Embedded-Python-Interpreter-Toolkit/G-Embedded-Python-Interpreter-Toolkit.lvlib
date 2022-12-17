@@ -43,4 +43,5 @@
 	<Item Name="Generate Function Call Argument Info.vi" Type="VI" URL="../Generate Function Call Argument Info.vi"/>
 	<Item Name="Call Function.vim" Type="VI" URL="../Call Function.vim"/>
 	<Item Name="Call Class Method.vim" Type="VI" URL="../Call Class Method.vim"/>
+	<Item Name="Cast Py Object to DBL.vi" Type="VI" URL="../Cast Py Object to DBL.vi"/>
 </Library>

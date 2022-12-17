@@ -117,6 +117,7 @@ extern "C"
     GEPIT_EXPORT int32_t destroy_py_object(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object);
     GEPIT_EXPORT int32_t create_py_object_int(LVErrorClusterPtr errorPtr, SessionHandle session, int32_t value, LVPythonObjRef *returnObjectPtr);
     GEPIT_EXPORT int32_t cast_py_object_to_int(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object, int32_t *returnValuePtr);
+    GEPIT_EXPORT int32_t cast_py_object_to_dbl(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object, double *returnValuePtr);
     GEPIT_EXPORT int32_t call_function(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef classInstance, LVStrHandle fnNameStrHandle, LVArgumentClusterPtr argsPtr, LVArgumentTypeInfoHandle argTypesInfoHandle, LVPythonObjRef *returnObjectPtr);
     GEPIT_EXPORT int32_t scope_as_str(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandlePtr handle);
     GEPIT_EXPORT int32_t cast_py_object_to_string(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object, LVStrHandlePtr strHandlePtr);

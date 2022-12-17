@@ -79,6 +79,35 @@ int32_t cast_py_object_to_int(LVErrorClusterPtr errorPtr, SessionHandle session,
     return 0;
 }
 
+int32_t cast_py_object_to_dbl(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object, double *returnValuePtr)
+{
+    if (!session)
+    {
+        return writeInvalidSessionHandleErr(errorPtr, __func__);
+    }
+    try
+    {
+        if (session->isNullObject(object))
+        {
+            return writeInvalidPythonObjectRefErr(errorPtr, __func__);
+        }
+        *returnValuePtr = session->getObject(object).cast<double>();
+    }
+    catch (pybind11::error_already_set const &e)
+    {
+        return writePythonExceptionErr(errorPtr, __func__, e.what());
+    }
+    catch (std::exception const &e)
+    {
+        return writeStdExceptionErr(errorPtr, __func__, e.what());
+    }
+    catch (...)
+    {
+        return writeUnkownErr(errorPtr, __func__);
+    }
+    return 0;
+}
+
 int32_t cast_py_object_to_string(LVErrorClusterPtr errorPtr, SessionHandle session, LVPythonObjRef object, LVStrHandlePtr strHandlePtr)
 {
     if (!session)
