@@ -2,12 +2,8 @@
 
 Experimenting with embedding the Python Interpreter into LabVIEW. This is mostly a proof of concept to see what is possible and worthwhile.
 
-<<<<<<< HEAD
-![Block Diagram - LabVIEW code for calling a function from a Python Script](LabVIEW/img/call_class_example.png?raw=true)
-=======
 ![Front Panel - The Moving Average Example](LabVIEW/img/moving-average-example.gif?raw=true)
 ![Block Diagram - LabVIEW code for calling a function from a Python Script](LabVIEW/img/moving-average-example.png?raw=true)
->>>>>>> origin/f-lv-arrays-as-numpy-arrays
 
 ```python
 import numpy as np
