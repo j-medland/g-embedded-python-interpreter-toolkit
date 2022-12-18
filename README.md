@@ -28,8 +28,8 @@ class MovingAverager:
 ## Features
 
 * Evaluate Scripts from File, import modules like normal
-* Call class constructors and methods without a wrapper
-* Pass LabVIEW Multi-Dimensional Arrays as Read-Only `numpy.ndarrays` (Real Numerical types only)
+* Call functions, class constructors and class methods without a wrapper
+* Pass LabVIEW Multi-Dimensional Arrays and IMAQ Images as Read-Only `numpy.ndarrays`
 * Create and Casting Python Objects to-from LabVEW types (in progress)
 
 ## Motivation
@@ -52,6 +52,7 @@ Working directly with Python's C interpreter interface is tricky so we are going
 * LabVIEW 2020 SP1 for Windows or later
 * Python 3.10 (other versions supported but require building of binaries) - usage of environmental managers (anaconda?) not tested.
 * [Caraya Toolkit](https://github.com/JKISoftware/Caraya)
+* LabVIEW IMAQ and IMAQdx (for IMAQ based examples)
 
 ## Developer Dependencies
 * [CMake](https://cmake.org/download/) (3.21 or later)
@@ -72,8 +73,8 @@ Very welcome. Open an issue to discuss anything or to put me right on how the Py
 ## To Do
 - [x] Setup Build System and Dependency Management
 - [x] Simple Working Example - Evaluate Python Script and Call Functions
-- [x] Explore Passing Python Objects back to LabVIEW (In Progress - Done but adding more types)
-- [ ] Explore Passing LabVIEW managed buffers and IMAQ images to Python (In Progress)
+- [x] Explore Passing Python Objects back to LabVIEW (Done but adding more types)
+- [x] Explore Passing LabVIEW managed buffers and IMAQ images to Python (Done but considering a Python-writable option)
 - [ ] Explore Passing Python allocated buffers back to LabVIEW
 - [ ] Explore making it easy to add the LabVIEW and C++ code to handle custom LabVIEW/Python types
 - [ ] Explore Multi-Threaded Operation (Currenly all CLFNs run in the UI thread which reduces peformance)

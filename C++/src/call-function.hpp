@@ -1,4 +1,4 @@
-#include "gepit.hpp"
+#include <gepit/gepit.hpp>
 
 // create pybind11 format string
 template <typename T>
@@ -53,7 +53,7 @@ pybind11::array cast_untyped_LVArrayHandle_to_numpy_array(LVVoid_t handle, size_
     
     auto dtype = create_dtype<T>();
     // add a dummy base array param to set ndarray.owndata to false;
-    return pybind11::array(dtype, shape, strides, buffer, pybind11::array(dtype, shape, strides, nullptr));
+    return pybind11::array(dtype, shape, strides, buffer, pybind11::array());
 }
 
 // templates to help with calling a handle's () operator with a std::vector of args

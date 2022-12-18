@@ -1,84 +1,83 @@
 #include <algorithm>
 #include <span>
-#include <complex>
 
-#include "gepit/call-function.hpp"
+#include "call-function.hpp"
 
-std::vector<pybind11::object> convertArgsToPythonObjects(SessionHandle session, LVArgumentClusterPtr argsPtr, LVArgumentTypeInfoHandle argTypesInfoHandle)
-{
-
-    size_t nargs = argTypesInfoHandle && (*argTypesInfoHandle) && (*argTypesInfoHandle)->dims ? (*argTypesInfoHandle)->dims[0] : 0;
-    std::vector<pybind11::object> argObjects;
-    argObjects.reserve(nargs);
-
-    auto argsTypesInfoSpan = std::span{(*argTypesInfoHandle)->data(), nargs};
-    auto argsSpan = std::span{argsPtr, nargs};
-
-    auto argIter = argsSpan.begin();
-
-    for (const auto &typeInfo : argsTypesInfoSpan)
-    {
+pybind11::object convertHandleToPythonObject(SessionHandle session, LVVoid_t handle, LVTypeInfo typeInfo){
         switch (typeInfo.type)
         {
         case LVNumericType::I8_ARRAY:
-            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<int8_t>(*argIter, typeInfo.ndims));
-            break;
+            return cast_untyped_LVArrayHandle_to_numpy_array<int8_t>(handle, typeInfo.ndims);
 
         case LVNumericType::I16_ARRAY:
-            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<int16_t>(*argIter, typeInfo.ndims));
-            break;
+            return cast_untyped_LVArrayHandle_to_numpy_array<int16_t>(handle, typeInfo.ndims);
 
         case LVNumericType::I32_ARRAY:
-            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<int32_t>(*argIter, typeInfo.ndims));
-            break;
+            return cast_untyped_LVArrayHandle_to_numpy_array<int32_t>(handle, typeInfo.ndims);
 
         case LVNumericType::I64_ARRAY:
-            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<int64_t>(*argIter, typeInfo.ndims));
-            break;
+            return cast_untyped_LVArrayHandle_to_numpy_array<int64_t>(handle, typeInfo.ndims);
 
         case LVNumericType::U8_ARRAY:
-            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<uint8_t>(*argIter, typeInfo.ndims));
-            break;
+            return cast_untyped_LVArrayHandle_to_numpy_array<uint8_t>(handle, typeInfo.ndims);
 
         case LVNumericType::U16_ARRAY:
-            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<uint16_t>(*argIter, typeInfo.ndims));
-            break;
+            return cast_untyped_LVArrayHandle_to_numpy_array<uint16_t>(handle, typeInfo.ndims);
 
         case LVNumericType::U32_ARRAY:
-            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<uint32_t>(*argIter, typeInfo.ndims));
-            break;
+            return cast_untyped_LVArrayHandle_to_numpy_array<uint32_t>(handle, typeInfo.ndims);
 
         case LVNumericType::U64_ARRAY:
-            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<uint64_t>(*argIter, typeInfo.ndims));
-            break;
+            return cast_untyped_LVArrayHandle_to_numpy_array<uint64_t>(handle, typeInfo.ndims);
 
         case LVNumericType::SGL_ARRAY:
-            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<float>(*argIter, typeInfo.ndims));
-            break;
+            return cast_untyped_LVArrayHandle_to_numpy_array<float>(handle, typeInfo.ndims);
 
         case LVNumericType::DBL_ARRAY:
-            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<double>(*argIter, typeInfo.ndims));
-            break;
+            return cast_untyped_LVArrayHandle_to_numpy_array<double>(handle, typeInfo.ndims);
 
         case LVNumericType::EXT_ARRAY:
-            argObjects.push_back(cast_untyped_LVArrayHandle_to_numpy_array<long double>(*argIter, typeInfo.ndims));
-            break;
+            return cast_untyped_LVArrayHandle_to_numpy_array<long double>(handle, typeInfo.ndims);
 
         case LVNumericType::PYOBJ:
-            if (session->isNullObject(*argIter))
+            if (session->isNullObject(handle))
             {
                 throw std::out_of_range("Null or Invalid Python Object supplied as a Function Argument.");
             }
-            argObjects.push_back(session->getObject(*argIter));
-            break;
+            return session->getObject(handle);
 
         default:
             throw std::out_of_range("Non-supported type supplied as a Function Argument.");
         }
-        // advance to next argument
+        // we should never get to here
+        return pybind11::none();
+    }
+
+void convertArgsToPythonObjects(SessionHandle session, LVArgumentClusterPtr argsPtr, LVArgumentTypeInfoHandle argTypesInfoHandle, std::vector<pybind11::object>&argObjects)
+{
+
+    size_t nargs = argTypesInfoHandle && (*argTypesInfoHandle) && (*argTypesInfoHandle)->dims ? (*argTypesInfoHandle)->dims[0] : 0;
+    argObjects.reserve(nargs);
+
+    auto argsTypesInfoSpan = std::span{(*argTypesInfoHandle)->data(), nargs};
+
+    if(nargs == 1){
+        auto typeInfo = argsTypesInfoSpan[0];
+        // check type
+        // we actually just have a handle to the object, not a pointer to a cluster of handles
+        LVVoid_t handle = reinterpret_cast<LVVoid_t>(argsPtr);
+        argObjects.push_back(convertHandleToPythonObject(session, handle, typeInfo));
+        return;
+    }
+
+    // where nargs !=1
+    auto argsSpan = std::span{argsPtr, nargs};
+    auto argIter = argsSpan.begin();
+
+    for (const auto &typeInfo : argsTypesInfoSpan){
+        argObjects.push_back(convertHandleToPythonObject(session, *argIter, typeInfo));
         argIter++;
     }
-    return argObjects;
 }
 
 int32_t call_function(LVErrorClusterPtr errorPtr,
@@ -96,9 +95,9 @@ int32_t call_function(LVErrorClusterPtr errorPtr,
     try
     {
         pybind11::object result = pybind11::none();
-
+        std::vector<pybind11::object> argObjects;
         // convert array of LVRefNums to vector of Python Objects
-        auto argObjects = convertArgsToPythonObjects(session, argsPtr, argTypesInfoHandle);
+        convertArgsToPythonObjects(session, argsPtr, argTypesInfoHandle, argObjects);
 
         // Get a Ref to the Function in the session scope or the class
         std::string fnNameString = lvStrHandleToStdString(fnNameStrHandle);
@@ -505,7 +504,7 @@ int32_t call_function(LVErrorClusterPtr errorPtr,
             result = function_call_with_args_vector<127>(fnHandle, argObjects);
             break;
         default:
-            throw std::out_of_range("Number of arguments cannot exceed 12. Consider creating a python function which can use *args");
+            throw std::out_of_range("Number of arguments cannot exceed 127. Consider creating a python function which can use *args");
         }
         *returnObjectPtr = session->keepObject(result);
     }

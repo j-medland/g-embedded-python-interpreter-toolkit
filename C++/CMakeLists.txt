@@ -23,7 +23,6 @@ add_library(${PROJECT_NAME} SHARED)
 set(HEADER_FILES 
     lv-interop.hpp
     gepit.hpp
-    call-function.hpp
 )
 
 # prepend include path
@@ -71,7 +70,8 @@ target_include_directories(${PROJECT_NAME}
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION ${INSTALL_DIR}/bin
     LIBRARY DESTINATION ${INSTALL_DIR}/bin
-    PUBLIC_HEADER DESTINATION ${INSTALL_DIR}/include/${PROJECT_NAME}
+    PUBLIC_HEADER DESTINATION ${INSTALL_DIR}/include/${PROJECT_NAME} # headers not really used by LabVIEW
 )
 
+# install the export header
 install(FILES ${PROJECT_BINARY_DIR}/${PROJECT_NAME}_export.h DESTINATION ${INSTALL_DIR}/include)

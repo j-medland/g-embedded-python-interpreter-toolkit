@@ -14,16 +14,19 @@
 		<Item Name="Merge Call Library Errors.vi" Type="VI" URL="../Merge Call Library Errors.vi"/>
 		<Item Name="Python Object Reference to Pointer Sized Ref.vi" Type="VI" URL="../Python Object Reference to Pointer Sized Ref.vi"/>
 		<Item Name="Pointer Sized Ref to Python Object Reference.vi" Type="VI" URL="../Pointer Sized Ref to Python Object Reference.vi"/>
+		<Item Name="Variant to Type Info.vi" Type="VI" URL="../Variant to Type Info.vi"/>
 		<Item Name="Call.vim" Type="VI" URL="../Call.vim"/>
 	</Item>
 	<Item Name="Types" Type="Folder">
 		<Item Name="Python Object Type.ctl" Type="VI" URL="../Python Object Type.ctl"/>
 		<Item Name="Python Object Reference.ctl" Type="VI" URL="../Python Object Reference.ctl"/>
 		<Item Name="Type Information.ctl" Type="VI" URL="../Type Information.ctl"/>
+		<Item Name="IMAQ Image Pointer.ctl" Type="VI" URL="../IMAQ Image Pointer.ctl"/>
 		<Item Name="Null Py Object Refnum.vi" Type="VI" URL="../Null Py Object Refnum.vi"/>
 	</Item>
 	<Item Name="Polymorphic Implementations" Type="Folder">
 		<Item Name="Create Py Object" Type="Folder">
+			<Item Name="Create Py Object IMAQ Image.vi" Type="VI" URL="../Create Py Object IMAQ Image.vi"/>
 			<Item Name="Create Py Object Int32.vi" Type="VI" URL="../Create Py Object Int32.vi"/>
 		</Item>
 		<Item Name="Cast Py Object" Type="Folder">
@@ -40,7 +43,7 @@
 	<Item Name="Read Session Attribute as String.vi" Type="VI" URL="../Read Session Attribute as String.vi"/>
 	<Item Name="Destroy Py Object.vi" Type="VI" URL="../Destroy Py Object.vi"/>
 	<Item Name="Print Py Object.vi" Type="VI" URL="../Print Py Object.vi"/>
-	<Item Name="Generate Function Call Argument Info.vi" Type="VI" URL="../Generate Function Call Argument Info.vi"/>
+	<Item Name="Generate Argument Type Info.vi" Type="VI" URL="../Generate Argument Type Info.vi"/>
 	<Item Name="Call Function.vim" Type="VI" URL="../Call Function.vim"/>
 	<Item Name="Call Class Method.vim" Type="VI" URL="../Call Class Method.vim"/>
 	<Item Name="Cast Py Object to DBL.vi" Type="VI" URL="../Cast Py Object to DBL.vi"/>
