@@ -1,11 +1,19 @@
 #include <gepit/gepit.hpp>
 
 int32_t create_session(LVErrorClusterPtr errorPtr, SessionHandlePtr sessionPtr)
-{
+{ 
     try
-    {   
-        pybind11::gil_scoped_acquire gil;
+    {
+        // try starting the interpreter (it might already be running)
+        pybind11::initialize_interpreter();
+    }
+    catch (std::runtime_error const &e)
+    {
+        // already running
+    }
+    try{
         *sessionPtr = new Session();
+        (*sessionPtr)->gil_scoped_release = std::make_unique<pybind11::gil_scoped_release>();
     }
     catch (pybind11::error_already_set const &e)
     {

@@ -28,11 +28,10 @@ private:
     std::map<int32_t, pybind11::object> objStore;
     uint32_t objStoreNextKey;
     std::mutex objStoreMutex;
-    // std::mutex threadStateMutex;
-    // PyInterpreterState* interpreterState;
-    // PyThreadState* threadState;
+    
 public:
     const pybind11::dict scope;
+    std::unique_ptr<pybind11::gil_scoped_release> gil_scoped_release;
     Session() : scope(pybind11::module::import("__main__").attr("__dict__")), objStoreNextKey(1) // start at non-zero-value
     {
         // nothing else to construct
@@ -56,14 +55,6 @@ public:
     {
         const std::lock_guard lock(objStoreMutex);
         return !(key > 0 && objStore.count(key));
-    }
-    ~Session(){
-        // const std::lock_guard lock(threadStateMutex);
-        // PyEval_RestoreThread(threadState);
-        // PyThreadState_Clear(threadState);
-        // PyThreadState_Delete(threadState);
-        // PyInterpreterState_Clear(interpreterState);
-        // PyInterpreterState_Delete(interpreterState);
     }
 };
 
@@ -133,8 +124,6 @@ typedef struct{
 #ifdef _32_BIT_ENV_
 #pragma pack(pop)
 #endif
-
-extern std::unique_ptr<pybind11::gil_scoped_release> _gil_scoped_release_global_;
 
 extern "C"
 {
