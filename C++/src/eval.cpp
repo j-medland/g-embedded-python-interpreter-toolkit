@@ -8,9 +8,8 @@ int32_t evaluate_script(LVErrorClusterPtr errorPtr, SessionHandle session, LVStr
     }
     try
     {
-        pybind11::gil_scoped_acquire gil_acquire;
+        pybind11::gil_scoped_acquire acquired_gil;
         pybind11::eval_file(lvStrHandleToStdString(filePathStrHandle), session->scope);
-        pybind11::gil_scoped_release gil_release;
     }
     catch (pybind11::error_already_set const &e)
     {

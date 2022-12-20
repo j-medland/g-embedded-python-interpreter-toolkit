@@ -11,6 +11,7 @@ int32_t destroy_py_object(LVErrorClusterPtr errorPtr, SessionHandle session, LVP
     }
     try
     {   
+        pybind11::gil_scoped_acquire acquired_gil;
         session->dropObject(object);
 
     }
@@ -37,8 +38,8 @@ int32_t create_py_object_int(LVErrorClusterPtr errorPtr, SessionHandle session, 
     }
     try
     {
+        pybind11::gil_scoped_acquire acquired_gil;
         *returnObjectPtr = session->keepObject(pybind11::int_(value));
-
     }
     catch (pybind11::error_already_set const &e)
     {
@@ -102,6 +103,7 @@ int32_t create_py_object_IMAQ(LVErrorClusterPtr errorPtr, SessionHandle session,
             throw std::invalid_argument("Image types RGB (U64) and Complex (CSG) not supported");
             break;
         }
+        pybind11::gil_scoped_acquire acquired_gil;
         // pass dummy array to pybind constructor to set OWNDATA to false
         *returnObjectPtr = session->keepObject(pybind11::array(dtype, shape, strides, reinterpret_cast<void*>(imaqImagePtr->pixelPointer), pybind11::array()));
 
@@ -133,6 +135,7 @@ int32_t cast_py_object_to_int(LVErrorClusterPtr errorPtr, SessionHandle session,
         {
             return writeInvalidPythonObjectRefErr(errorPtr, __func__);
         }
+        pybind11::gil_scoped_acquire acquired_gil;
         *returnValuePtr = session->getObject(object).cast<int32_t>();
 
     }
@@ -193,6 +196,7 @@ int32_t cast_py_object_to_string(LVErrorClusterPtr errorPtr, SessionHandle sessi
         {
             return writeInvalidPythonObjectRefErr(errorPtr, __func__);
         }
+        pybind11::gil_scoped_acquire acquired_gil;
         writeStringToStringHandlePtr(strHandlePtr, session->getObject(object).cast<std::string>());
 
     }
@@ -223,7 +227,7 @@ int32_t py_object_print_to_str(LVErrorClusterPtr errorPtr, SessionHandle session
         {
             return writeInvalidPythonObjectRefErr(errorPtr, __func__);
         }
-
+        pybind11::gil_scoped_acquire acquired_gil;
         return writeStringToStringHandlePtr(strHandlePtr, pybind11::str(session->getObject(object)));
     }
     catch (pybind11::error_already_set const &e)
