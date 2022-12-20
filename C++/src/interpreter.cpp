@@ -4,8 +4,11 @@ int32_t initialize_interpreter(LVErrorClusterPtr errorPtr, LVBoolean *alreadyRun
 {
     try
     {
+        PyGILState_STATE gstate;
         // try starting the interpreter (it might already be running)
         pybind11::initialize_interpreter();
+        // immeditely grab and release the GIL
+        PyGILState_Release(PyGILState_Ensure());
     }
     catch (std::runtime_error const &e)
     {

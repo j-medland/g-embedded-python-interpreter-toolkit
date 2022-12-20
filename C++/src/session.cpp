@@ -2,23 +2,27 @@
 
 int32_t create_session(LVErrorClusterPtr errorPtr, SessionHandlePtr sessionPtr)
 {
+    PyGILState_STATE gstate;
+    int32_t result = 0;
     try
     {
+        gstate = PyGILState_Ensure();
         *sessionPtr = new Session();
     }
     catch (pybind11::error_already_set const &e)
     {
-        return writePythonExceptionErr(errorPtr, __func__, e.what());
+        result = writePythonExceptionErr(errorPtr, __func__, e.what());
     }
     catch (std::exception const &e)
     {
-        return writeStdExceptionErr(errorPtr, __func__, e.what());
+        result = writeStdExceptionErr(errorPtr, __func__, e.what());
     }
     catch (...)
     {
-        return writeUnkownErr(errorPtr, __func__);
+        result = writeUnkownErr(errorPtr, __func__);
     }
-    return 0;
+    PyGILState_Release(gstate);
+    return result;
 }
 
 int32_t destroy_session(LVErrorClusterPtr errorPtr, SessionHandle session)
@@ -27,23 +31,27 @@ int32_t destroy_session(LVErrorClusterPtr errorPtr, SessionHandle session)
     {
         return writeInvalidSessionHandleErr(errorPtr, __func__);
     }
+    PyGILState_STATE gstate;
+    int32_t result = 0;
     try
     {
+        gstate = PyGILState_Ensure();
         delete (session);
     }
     catch (pybind11::error_already_set const &e)
     {
-        return writePythonExceptionErr(errorPtr, __func__, e.what());
+        result = writePythonExceptionErr(errorPtr, __func__, e.what());
     }
     catch (std::exception const &e)
     {
-        return writeStdExceptionErr(errorPtr, __func__, e.what());
+        result = writeStdExceptionErr(errorPtr, __func__, e.what());
     }
     catch (...)
     {
-        return writeUnkownErr(errorPtr, __func__);
+        result = writeUnkownErr(errorPtr, __func__);
     }
-    return 0;
+    PyGILState_Release(gstate);
+    return result;
 }
 
 int32_t read_session_attribute_as_string(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandle attributeNameStrHandle, LVBoolean *found, LVStrHandlePtr valueStrHandlePtr)
