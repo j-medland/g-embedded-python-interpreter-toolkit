@@ -1,18 +1,16 @@
 #include <gepit/gepit.hpp>
 
+std::unique_ptr<pybind11::gil_scoped_release> _gil_scoped_release_global_;
+
 int32_t initialize_interpreter(LVErrorClusterPtr errorPtr, LVBoolean *alreadyRunningPtr)
 {
     try
     {
         // try starting the interpreter (it might already be running)
         pybind11::initialize_interpreter();
-        // realse the gil using the scoped release, then deactivate it
-        pybind11::gil_scoped_release released_gil;
-        released_gil.disarm();
     }
     catch (std::runtime_error const &e)
     {
-        //"The interpreter is already running"
         *alreadyRunningPtr = LVBooleanTrue;
     }
     catch (std::exception const &e)
@@ -23,14 +21,19 @@ int32_t initialize_interpreter(LVErrorClusterPtr errorPtr, LVBoolean *alreadyRun
     {
         return writeUnkownErr(errorPtr, __func__);
     }
+
+    _gil_scoped_release_global_ = std::make_unique<pybind11::gil_scoped_release>();
+
     return 0;
 }
 
 int32_t finalize_interpreter(LVErrorClusterPtr errorPtr)
 {
     try
-    {
-        pybind11::finalize_interpreter();
+    {   
+         _gil_scoped_release_global_.reset();
+        // finalizing mostly breaks stuff so skip it
+        // pybind11::finalize_interpreter();
     }
     catch (std::exception const &e)
     {

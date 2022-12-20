@@ -2,6 +2,7 @@
 
 #include <map>
 #include <mutex>
+#include <memory>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/embed.h>
@@ -132,6 +133,8 @@ typedef struct{
 #ifdef _32_BIT_ENV_
 #pragma pack(pop)
 #endif
+
+extern std::unique_ptr<pybind11::gil_scoped_release> _gil_scoped_release_global_;
 
 extern "C"
 {

@@ -94,7 +94,7 @@ int32_t call_function(LVErrorClusterPtr errorPtr,
     }
     try
     {
-        pybind11::gil_scoped_acquire acquired_gil;
+        pybind11::gil_scoped_acquire gil;
         pybind11::object result = pybind11::none();
         std::vector<pybind11::object> argObjects;
         // convert array of LVRefNums to vector of Python Objects

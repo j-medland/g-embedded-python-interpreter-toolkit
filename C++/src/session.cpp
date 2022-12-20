@@ -4,7 +4,7 @@ int32_t create_session(LVErrorClusterPtr errorPtr, SessionHandlePtr sessionPtr)
 {
     try
     {   
-        pybind11::gil_scoped_acquire acquired_gil;
+        pybind11::gil_scoped_acquire gil;
         *sessionPtr = new Session();
     }
     catch (pybind11::error_already_set const &e)
@@ -30,7 +30,7 @@ int32_t destroy_session(LVErrorClusterPtr errorPtr, SessionHandle session)
     }
     try
     {
-        pybind11::gil_scoped_acquire acquired_gil;
+        
         delete (session);
     }
     catch (pybind11::error_already_set const &e)
