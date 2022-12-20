@@ -7,8 +7,9 @@ int32_t initialize_interpreter(LVErrorClusterPtr errorPtr, LVBoolean *alreadyRun
         PyGILState_STATE gstate;
         // try starting the interpreter (it might already be running)
         pybind11::initialize_interpreter();
-        // immeditely grab and release the GIL
-        PyGILState_Release(PyGILState_Ensure());
+        // realse the gil using the scoped release, then deactivate it
+        pybind11::gil_scoped_release released_gil;
+        released_gil.disarm();
     }
     catch (std::runtime_error const &e)
     {

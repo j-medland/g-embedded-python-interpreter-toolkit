@@ -2,27 +2,24 @@
 
 int32_t create_session(LVErrorClusterPtr errorPtr, SessionHandlePtr sessionPtr)
 {
-    PyGILState_STATE gstate;
-    int32_t result = 0;
     try
-    {
-        gstate = PyGILState_Ensure();
+    {   
+        pybind11::gil_scoped_acquire acquired_gil;
         *sessionPtr = new Session();
     }
     catch (pybind11::error_already_set const &e)
     {
-        result = writePythonExceptionErr(errorPtr, __func__, e.what());
+        return writePythonExceptionErr(errorPtr, __func__, e.what());
     }
     catch (std::exception const &e)
     {
-        result = writeStdExceptionErr(errorPtr, __func__, e.what());
+        return writeStdExceptionErr(errorPtr, __func__, e.what());
     }
     catch (...)
     {
-        result = writeUnkownErr(errorPtr, __func__);
+        return writeUnkownErr(errorPtr, __func__);
     }
-    PyGILState_Release(gstate);
-    return result;
+    return 0;
 }
 
 int32_t destroy_session(LVErrorClusterPtr errorPtr, SessionHandle session)
@@ -31,27 +28,24 @@ int32_t destroy_session(LVErrorClusterPtr errorPtr, SessionHandle session)
     {
         return writeInvalidSessionHandleErr(errorPtr, __func__);
     }
-    PyGILState_STATE gstate;
-    int32_t result = 0;
     try
     {
-        gstate = PyGILState_Ensure();
+        pybind11::gil_scoped_acquire acquired_gil;
         delete (session);
     }
     catch (pybind11::error_already_set const &e)
     {
-        result = writePythonExceptionErr(errorPtr, __func__, e.what());
+        return writePythonExceptionErr(errorPtr, __func__, e.what());
     }
     catch (std::exception const &e)
     {
-        result = writeStdExceptionErr(errorPtr, __func__, e.what());
+        return writeStdExceptionErr(errorPtr, __func__, e.what());
     }
     catch (...)
     {
-        result = writeUnkownErr(errorPtr, __func__);
+        return writeUnkownErr(errorPtr, __func__);
     }
-    PyGILState_Release(gstate);
-    return result;
+    return 0;
 }
 
 int32_t read_session_attribute_as_string(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandle attributeNameStrHandle, LVBoolean *found, LVStrHandlePtr valueStrHandlePtr)
