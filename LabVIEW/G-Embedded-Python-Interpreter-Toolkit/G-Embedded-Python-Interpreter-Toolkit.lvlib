@@ -34,8 +34,10 @@
 			<Item Name="Cast Py Object to String.vi" Type="VI" URL="../Cast Py Object to String.vi"/>
 		</Item>
 	</Item>
-	<Item Name="Initialize Interpreter.vi" Type="VI" URL="../Initialize Interpreter.vi"/>
-	<Item Name="Finalize Interpreter.vi" Type="VI" URL="../Finalize Interpreter.vi"/>
+	<Item Name="Depricated" Type="Folder">
+		<Item Name="Finalize Interpreter.vi" Type="VI" URL="../Finalize Interpreter.vi"/>
+		<Item Name="Initialize Interpreter.vi" Type="VI" URL="../Initialize Interpreter.vi"/>
+	</Item>
 	<Item Name="Create Session.vi" Type="VI" URL="../Create Session.vi"/>
 	<Item Name="Destroy Session.vi" Type="VI" URL="../Destroy Session.vi"/>
 	<Item Name="Print Session Scope.vi" Type="VI" URL="../Print Session Scope.vi"/>
