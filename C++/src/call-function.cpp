@@ -102,7 +102,7 @@ int32_t call_function(LVErrorClusterPtr errorPtr,
 
         // Get a Ref to the Function in the session scope or the class
         std::string fnNameString = lvStrHandleToStdString(fnNameStrHandle);
-        pybind11::handle fnHandle;
+        pybind11::object fnHandle;
 
         if (session->isNullObject(classInstance))
         {

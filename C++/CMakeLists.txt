@@ -33,6 +33,7 @@ target_sources(${PROJECT_NAME}
     PRIVATE
     src/call-function.cpp
     src/eval.cpp
+    src/exec.cpp
     src/interpreter.cpp
     src/lv-interop.cpp
     src/py-object.cpp
