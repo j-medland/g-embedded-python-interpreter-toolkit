@@ -39,7 +39,9 @@
 	<Item Name="Create Session.vi" Type="VI" URL="../Create Session.vi"/>
 	<Item Name="Destroy Session.vi" Type="VI" URL="../Destroy Session.vi"/>
 	<Item Name="Print Session Scope.vi" Type="VI" URL="../Print Session Scope.vi"/>
+	<Item Name="Evaluate Expression.vi" Type="VI" URL="../Evaluate Expression.vi"/>
 	<Item Name="Evaluate Script.vi" Type="VI" URL="../Evaluate Script.vi"/>
+	<Item Name="Execute Statements.vi" Type="VI" URL="../Execute Statements.vi"/>
 	<Item Name="Read Session Attribute as String.vi" Type="VI" URL="../Read Session Attribute as String.vi"/>
 	<Item Name="Destroy Py Object.vi" Type="VI" URL="../Destroy Py Object.vi"/>
 	<Item Name="Print Py Object.vi" Type="VI" URL="../Print Py Object.vi"/>

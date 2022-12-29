@@ -1,5 +1,30 @@
 #include <gepit/gepit.hpp>
 
+Session::Session() : scope(pybind11::module::import("__main__").attr("__dict__")), objStoreNextKey(1) // start at non-zero-value
+{
+    // nothing else to construct
+}
+uint32_t Session::keepObject(pybind11::object obj)
+{
+    const std::lock_guard lock(objStoreMutex);
+    objStore[objStoreNextKey] = obj;
+    return objStoreNextKey++;
+}
+pybind11::object Session::getObject(uint32_t key)
+{
+    return objStore.at(key);
+}
+void Session::dropObject(uint32_t key)
+{
+    const std::lock_guard lock(objStoreMutex);
+    objStore.erase(key);
+}
+bool Session::isNullObject(uint32_t key)
+{
+    const std::lock_guard lock(objStoreMutex);
+    return !(key > 0 && objStore.count(key));
+}
+
 int32_t create_session(LVErrorClusterPtr errorPtr, SessionHandlePtr sessionPtr)
 {
     try
@@ -29,7 +54,7 @@ int32_t destroy_session(LVErrorClusterPtr errorPtr, SessionHandle session)
     }
     try
     {
-        delete (session);
+        delete session;
     }
     catch (pybind11::error_already_set const &e)
     {
