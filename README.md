@@ -27,7 +27,7 @@ class MovingAverager:
 
 ## Features
 
-* Evaluate Python and Execute Python Strings and Scripts with all the normal module features
+* Evaluate Python Code from Strings and Files with all the normal module features
 * Call functions, class constructors and class methods without a wrapper
 * Pass LabVIEW Multi-Dimensional Arrays and IMAQ Images as Read-Only `numpy.ndarrays`
 * Create and Cast Python Objects to and from LabVEW types (in progress)
