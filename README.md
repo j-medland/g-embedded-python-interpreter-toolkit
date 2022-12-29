@@ -77,4 +77,4 @@ Very welcome. Open an issue to discuss anything or to put me right on how the Py
 - [x] Explore Passing LabVIEW managed buffers and IMAQ images to Python (Done but considering a Python-writable option)
 - [ ] Explore Passing Python allocated buffers back to LabVIEW
 - [ ] Explore making it easy to add the LabVIEW and C++ code to handle custom LabVIEW/Python types
-- [ ] Explore Multi-Threaded Operation (Currenly all CLFNs run in the UI thread which reduces peformance)
+- [x] Explore Multi-Threaded Operation (Results: Managing the GIL and object lifetimes leads to more crashes)
