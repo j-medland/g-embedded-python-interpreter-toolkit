@@ -18,7 +18,8 @@ enum errorCodes : int32_t
     PythonExceptionErr = -2,
     StdExceptionErr = -3,
     InvalidSessionHandle = -4,
-    PythonObjectInvalid = -5
+    PythonObjectInvalid = -5,
+    InterpreterAlreadyRunning = -6
 };
 
 // C++ Object to be passed back to LabVIEW between DLL calls
@@ -28,8 +29,7 @@ private:
     std::map<int32_t, pybind11::object> objStore;
     uint32_t objStoreNextKey;
     std::mutex objStoreMutex;
-    std::unique_ptr<pybind11::gil_scoped_release> gil_scoped_release;
-    
+
 public:
     const pybind11::dict scope;
     Session();
@@ -40,6 +40,17 @@ public:
 };
 
 typedef Session *SessionHandle, **SessionHandlePtr;
+
+// C++ Object to manage interpreter lifetime
+class GEPITData
+{
+    private:
+        std::unique_ptr<pybind11::gil_scoped_release> gil_scoped_release;
+    public:
+        GEPITData();
+};
+
+typedef GEPITData *GEPITDataHandle, **GEPITDataHandlePtr;
 
 enum LVNumericType : uint8_t
 {
@@ -60,7 +71,8 @@ enum LVNumericType : uint8_t
     PYOBJ = 40
 };
 
-enum ImaqImageDataTypes : uint32_t {
+enum ImaqImageDataTypes : uint32_t
+{
     Grayscale_U8 = 0,
     Grayscale_I16 = 1,
     Grayscale_SGL = 2,
@@ -95,7 +107,8 @@ typedef struct
 
 typedef LVArray_t<1, LVTypeInfo> **LVArgumentTypeInfoHandle;
 
-typedef struct{
+typedef struct
+{
     uint64_t pixelPointer;
     int32_t lineWidth, width, height;
     ImaqImageDataTypes type;
@@ -110,6 +123,8 @@ extern "C"
 {
     GEPIT_DEPRECATED_EXPORT int32_t initialize_interpreter(LVErrorClusterPtr errorPtr, LVBoolean *alreadyRunningPtr);
     GEPIT_DEPRECATED_EXPORT int32_t finalize_interpreter(LVErrorClusterPtr errorPtr);
+    GEPIT_EXPORT MgErr reserve(GEPITDataHandlePtr LVInstanceDataPtr);
+    GEPIT_EXPORT MgErr unreserve(GEPITDataHandlePtr LVInstanceDataPtr);
     GEPIT_EXPORT int32_t create_session(LVErrorClusterPtr errorPtr, SessionHandlePtr sessionPtr);
     GEPIT_EXPORT int32_t destroy_session(LVErrorClusterPtr errorPtr, SessionHandle session);
     GEPIT_EXPORT int32_t evaluate_script(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandle filePathStrHandle);

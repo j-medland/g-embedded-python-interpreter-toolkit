@@ -1,22 +1,9 @@
 #include <gepit/gepit.hpp>
 
-// Session Constructor
-// Pybind11 provides a nice global-interpreter-lock (GIL) API with scoped-guard type 
-// lock-obtain/lock-release functionality. To be able to make shared-library calls
-// from "any-thread" in LabVIEW we are going to store a scoped release in the session object
-// to force the GIL release when the interpreter is initilaized. "disarming" the scoped_release
-// immediately after obtaining it leaves it dangling in memory and causes more problems so this
-// appears to be the best solution.
-// This approach would appear to defeat the point of the scoped-guard but doing it this way allows
-// pybind11::gil_scoped_acquire calls without getting a deadlock or having to use the basic Python 
-// provided implementation which has its own quirks or issues.
-
-Session::Session() : 
-    scope(pybind11::module::import("__main__").attr("__dict__")), 
-    objStoreNextKey(1)
+Session::Session() : scope(pybind11::module::import("__main__").attr("__dict__")),
+                     objStoreNextKey(1) //start at non-zero value
 {
-    // create scoped_release here (not in initializer list)
-    gil_scoped_release = std::make_unique<pybind11::gil_scoped_release>();
+    // nothing to construct
 }
 
 uint32_t Session::keepObject(pybind11::object obj)
@@ -41,17 +28,9 @@ bool Session::isNullObject(uint32_t key)
 }
 
 int32_t create_session(LVErrorClusterPtr errorPtr, SessionHandlePtr sessionPtr)
-{ 
+{
     try
     {
-        // try starting the interpreter (it might already be running)
-        pybind11::initialize_interpreter();
-    }
-    catch (std::runtime_error const &e)
-    {
-        // already running
-    }
-    try{
         *sessionPtr = new Session();
     }
     catch (pybind11::error_already_set const &e)
@@ -77,7 +56,7 @@ int32_t destroy_session(LVErrorClusterPtr errorPtr, SessionHandle session)
     }
     try
     {
-        
+
         delete (session);
     }
     catch (pybind11::error_already_set const &e)
