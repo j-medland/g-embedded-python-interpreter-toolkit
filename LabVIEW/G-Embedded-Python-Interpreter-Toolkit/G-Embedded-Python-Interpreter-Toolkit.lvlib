@@ -45,4 +45,5 @@
 	<Item Name="Call Function.vim" Type="VI" URL="../Call Function.vim"/>
 	<Item Name="Call Class Method.vim" Type="VI" URL="../Call Class Method.vim"/>
 	<Item Name="Cast Py Object to DBL.vi" Type="VI" URL="../Cast Py Object to DBL.vi"/>
+	<Item Name="Init.vi" Type="VI" URL="../Init.vi"/>
 </Library>

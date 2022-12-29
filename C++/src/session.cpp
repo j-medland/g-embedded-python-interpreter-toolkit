@@ -1,7 +1,7 @@
 #include <gepit/gepit.hpp>
 
 Session::Session() : scope(pybind11::module::import("__main__").attr("__dict__")),
-                     objStoreNextKey(1) //start at non-zero value
+                     objStoreNextKey(1) // start at non-zero value
 {
     // nothing to construct
 }
@@ -31,6 +31,7 @@ int32_t create_session(LVErrorClusterPtr errorPtr, SessionHandlePtr sessionPtr)
 {
     try
     {
+        pybind11::gil_scoped_acquire gil;
         *sessionPtr = new Session();
     }
     catch (pybind11::error_already_set const &e)
@@ -56,8 +57,7 @@ int32_t destroy_session(LVErrorClusterPtr errorPtr, SessionHandle session)
     }
     try
     {
-
-        delete (session);
+        delete session;
     }
     catch (pybind11::error_already_set const &e)
     {

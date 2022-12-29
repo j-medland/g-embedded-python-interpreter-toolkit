@@ -22,6 +22,10 @@ enum errorCodes : int32_t
     InterpreterAlreadyRunning = -6
 };
 
+struct InterpreterData{
+    std::unique_ptr<pybind11::gil_scoped_release> gil_scoped_release;
+};
+
 // C++ Object to be passed back to LabVIEW between DLL calls
 class Session
 {
@@ -40,17 +44,6 @@ public:
 };
 
 typedef Session *SessionHandle, **SessionHandlePtr;
-
-// C++ Object to manage interpreter lifetime
-class GEPITData
-{
-    private:
-        std::unique_ptr<pybind11::gil_scoped_release> gil_scoped_release;
-    public:
-        GEPITData();
-};
-
-typedef GEPITData *GEPITDataHandle, **GEPITDataHandlePtr;
 
 enum LVNumericType : uint8_t
 {
@@ -121,10 +114,8 @@ typedef struct
 
 extern "C"
 {
-    GEPIT_DEPRECATED_EXPORT int32_t initialize_interpreter(LVErrorClusterPtr errorPtr, LVBoolean *alreadyRunningPtr);
-    GEPIT_DEPRECATED_EXPORT int32_t finalize_interpreter(LVErrorClusterPtr errorPtr);
-    GEPIT_EXPORT MgErr reserve(GEPITDataHandlePtr LVInstanceDataPtr);
-    GEPIT_EXPORT MgErr unreserve(GEPITDataHandlePtr LVInstanceDataPtr);
+    GEPIT_EXPORT int32_t initialize_interpreter(LVErrorClusterPtr errorPtr, InterpreterData** dataHandlePtr );
+    GEPIT_EXPORT int32_t finalize_interpreter(LVErrorClusterPtr errorPtr, InterpreterData* dataHandle );
     GEPIT_EXPORT int32_t create_session(LVErrorClusterPtr errorPtr, SessionHandlePtr sessionPtr);
     GEPIT_EXPORT int32_t destroy_session(LVErrorClusterPtr errorPtr, SessionHandle session);
     GEPIT_EXPORT int32_t evaluate_script(LVErrorClusterPtr errorPtr, SessionHandle session, LVStrHandle filePathStrHandle);

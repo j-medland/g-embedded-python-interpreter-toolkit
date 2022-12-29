@@ -32,9 +32,9 @@ list(TRANSFORM HEADER_FILES PREPEND ${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_
 target_sources(${PROJECT_NAME}
     PRIVATE
     src/call-function.cpp
-    src/clfn-callbacks.cpp
     src/eval.cpp
     src/exec.cpp
+    src/interpreter.cpp
     src/lv-interop.cpp
     src/py-object.cpp
     src/session.cpp
